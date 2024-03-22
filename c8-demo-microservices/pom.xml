@@ -14,6 +14,7 @@
 
     <modules>
         <module>c8-demo-microservice-one</module>
+        <module>c8-demo-microservice-two</module>
     </modules>
 
     <dependencies>

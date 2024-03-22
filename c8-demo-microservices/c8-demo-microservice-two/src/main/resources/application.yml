@@ -1,0 +1,25 @@
+server:
+  port: 8102
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5442/postgres
+    username: postgres
+    password: postgres
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+  security:
+    user:
+      name: admin
+      password: admin
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+logging:
+  level:
+    org.hibernate.sql: DEBUG
+    org.hibernate.type: TRACE

@@ -3,6 +3,8 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/c8-demo-microservices/c8-demo-microservice-one/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/c8-demo-microservices/c8-demo-microservice-one/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/c8-demo-microservices/c8-demo-microservice-two/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/c8-demo-microservices/c8-demo-microservice-two/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/c8-demo-microservices/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/c8-demo-microservices/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/c8-demo-orchestrators/src/main/java" charset="UTF-8" />
