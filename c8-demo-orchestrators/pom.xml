@@ -11,9 +11,12 @@
 
     <artifactId>c8-demo-orchestrators</artifactId>
     <packaging>pom</packaging>
+    <modules>
+        <module>c8-demo-orchestrator-one</module>
+    </modules>
 
     <properties>
-        <spring-zeebe.version>8.4.0</spring-zeebe.version>
+        <spring-zeebe.version>8.4.2</spring-zeebe.version>
     </properties>
 
     <dependencies>
