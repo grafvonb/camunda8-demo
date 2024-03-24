@@ -4,6 +4,7 @@ import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.ZeebeFuture;
 import io.camunda.zeebe.client.api.response.CompleteJobResponse;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
+import org.dzbank.zielbildbpm.c8demo.orchestrator.one.configuration.RuntimeConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,13 +28,14 @@ public class OrchestratorOneController {
     }
 
     @PostMapping("/start")
-    public Mono<ProcessInstanceEvent> startProcessInstance(@RequestBody String processKey) {
+    public Mono<ProcessInstanceEvent> startProcessInstance(@RequestBody RuntimeConfig runtimeConfig) {
         ZeebeFuture<ProcessInstanceEvent> future = client.newCreateInstanceCommand()
-                .bpmnProcessId(processKey)
+                .bpmnProcessId(runtimeConfig.getWorkflowType())
                 .latestVersion()
+                .variables(runtimeConfig)
                 .send();
 
-        logger.info("Start of the process with the key {} completed!", processKey);
+        logger.info("Start of the process of the type {} completed!", runtimeConfig.getWorkflowType());
 
         return Mono.fromFuture(future::toCompletableFuture)
                 .timeout(Duration.ofSeconds(30))
