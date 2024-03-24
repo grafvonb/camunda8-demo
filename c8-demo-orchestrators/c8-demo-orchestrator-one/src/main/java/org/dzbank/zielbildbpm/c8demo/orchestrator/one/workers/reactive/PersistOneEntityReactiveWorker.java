@@ -29,9 +29,9 @@ public class PersistOneEntityReactiveWorker {
 
         Map<String, Object> variables = job.getVariablesAsMap();
 
-        OneEntity oneEntity = new OneEntity(Long.toString(job.getProcessInstanceKey()), "body one camunda");
+        OneEntity oneEntity = new OneEntity(Long.toString(job.getProcessInstanceKey()), "body one reactive");
         oOneService.createOneEntity(oneEntity)
-                .subscribe(created -> variables.put("oneEntity", created),
+                .subscribe(created -> variables.put("oneEntityReactive", created),
                         error -> {
                             throw new RuntimeException("Could not complete job " + job, error);
                         },
@@ -43,7 +43,7 @@ public class PersistOneEntityReactiveWorker {
                                         throw new RuntimeException("Could not complete job " + job, throwable);
                                     });
 
-                            logger.debug("PersistOneEntity system task {} completed!", job.getKey());
+                            logger.debug("PersistOneEntity reactive way system task {} completed!", job.getKey());
                         });
     }
 }
