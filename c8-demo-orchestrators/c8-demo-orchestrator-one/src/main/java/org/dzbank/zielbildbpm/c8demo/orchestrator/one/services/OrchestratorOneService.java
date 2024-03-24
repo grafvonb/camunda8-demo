@@ -19,7 +19,7 @@ public class OrchestratorOneService {
 
     public OrchestratorOneService(WebClient.Builder webClientBuilder,
                                   @Value("${microservice-one.rest.base-url}") String msOneBaseUrl,
-                                  @Value("${microservice-one.rest.base-url}") String msTwoBaseUrl) {
+                                  @Value("${microservice-two.rest.base-url}") String msTwoBaseUrl) {
         this.msOneWebClient = webClientBuilder.baseUrl(msOneBaseUrl).build();
         this.msTwoWebClient = webClientBuilder.baseUrl(msTwoBaseUrl).build();
     }
@@ -47,6 +47,4 @@ public class OrchestratorOneService {
                 .retrieve()
                 .bodyToMono(Void.class);
     }
-
-
 }

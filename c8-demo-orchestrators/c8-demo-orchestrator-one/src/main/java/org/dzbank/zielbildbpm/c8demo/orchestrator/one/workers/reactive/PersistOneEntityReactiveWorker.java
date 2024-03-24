@@ -33,16 +33,23 @@ public class PersistOneEntityReactiveWorker {
         oOneService.createOneEntity(oneEntity)
                 .subscribe(created -> variables.put("oneEntityReactive", created),
                         error -> {
-                            throw new RuntimeException("Could not complete job " + job, error);
+                            client.newFailCommand(job.getKey())
+                                    .retries(job.getRetries() - 1)
+                                    .errorMessage("Could not complete job " + job + ((error.getMessage() != null) ? (" due to: " + error.getMessage()) : ""))
+                                    .send()
+                                    .exceptionally(throwable -> {
+                                        throw new RuntimeException("Could not fail job " + job, throwable);
+                                    });
+                            logger.debug("PersistOneEntity reactive way system task {} failed (attempts left: {}).", job.getKey(), job.getRetries() - 1);
                         },
                         () -> {
                             client.newCompleteCommand(job.getKey())
                                     .variables(variables)
                                     .send()
+                                    .thenApply(jobResponse -> jobResponse)
                                     .exceptionally(throwable -> {
                                         throw new RuntimeException("Could not complete job " + job, throwable);
                                     });
-
                             logger.debug("PersistOneEntity reactive way system task {} completed!", job.getKey());
                         });
     }

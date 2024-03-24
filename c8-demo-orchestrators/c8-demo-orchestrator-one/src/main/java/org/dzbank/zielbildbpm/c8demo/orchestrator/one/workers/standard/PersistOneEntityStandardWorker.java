@@ -36,7 +36,7 @@ public class PersistOneEntityStandardWorker {
 
         client.newCompleteCommand(job.getKey())
                 .variables(variables)
-                .send()
+                .send() // .join() would block
                 .exceptionally(throwable -> {
                     throw new RuntimeException("Could not complete job " + job, throwable);
                 });

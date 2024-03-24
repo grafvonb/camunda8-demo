@@ -16,6 +16,8 @@ zeebe:
     worker:
       stream:
         enabled: true
+      threads: 3
+      max-jobs-active: 5
 server:
   port: 8100
 spring:
@@ -32,4 +34,5 @@ logging:
   level:
     org.dzbank: DEBUG
   pattern:
+    console: "%d{HH:mm:ss.SSS} [%15.15t] %m%n"
 #    console: "%d{yyyy-MM-dd HH:mm:ss} %-5p %c - %m%n"

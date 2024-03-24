@@ -10,7 +10,7 @@
     </bpmn:endEvent>
     <bpmn:serviceTask id="PersistReactiveOneEntityTask" name="Persist OneEntity (reactive)">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="persistOneEntityReactiveWorker" />
+        <zeebe:taskDefinition type="persistOneEntityReactiveWorker" retries="5" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0yfw71e</bpmn:incoming>
       <bpmn:outgoing>Flow_0tsqspi</bpmn:outgoing>
@@ -19,7 +19,7 @@
     <bpmn:sequenceFlow id="Flow_0s88lfj" sourceRef="PersistStandardOneEntityTask" targetRef="WorkflowOneEndEvent" />
     <bpmn:serviceTask id="PersistStandardOneEntityTask" name="Persist OneEntity (blocking)">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="persistOneEntityStandardWorker" />
+        <zeebe:taskDefinition type="persistOneEntityStandardWorker" retries="5" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0tsqspi</bpmn:incoming>
       <bpmn:outgoing>Flow_0s88lfj</bpmn:outgoing>
