@@ -4,7 +4,9 @@ import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.ZeebeFuture;
 import io.camunda.zeebe.client.api.response.CompleteJobResponse;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
+import org.dzbank.zielbildbpm.c8demo.orchestrator.one.configuration.CompleteJobConfig;
 import org.dzbank.zielbildbpm.c8demo.orchestrator.one.configuration.RuntimeConfig;
+import org.dzbank.zielbildbpm.c8demo.orchestrator.one.workers.ProcessInstanceVariables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,10 +31,13 @@ public class OrchestratorOneController {
 
     @PostMapping("/start")
     public Mono<ProcessInstanceEvent> startProcessInstance(@RequestBody RuntimeConfig runtimeConfig) {
+
+        ProcessInstanceVariables variables = new ProcessInstanceVariables(runtimeConfig);
+
         ZeebeFuture<ProcessInstanceEvent> future = client.newCreateInstanceCommand()
                 .bpmnProcessId(runtimeConfig.getWorkflowType())
                 .latestVersion()
-                .variables(runtimeConfig)
+                .variables(variables)
                 .send();
 
         logger.info("Start of the process of the type {} completed!", runtimeConfig.getWorkflowType());
@@ -44,11 +49,11 @@ public class OrchestratorOneController {
     }
 
     @PostMapping("complete-job")
-    public Mono<CompleteJobResponse> releaseActionManually(@RequestBody long jobKey) {
-        ZeebeFuture<CompleteJobResponse> future = client.newCompleteCommand(jobKey)
+    public Mono<CompleteJobResponse> completeJob(@RequestBody CompleteJobConfig completeJobConfig) {
+        ZeebeFuture<CompleteJobResponse> future = client.newCompleteCommand(completeJobConfig.getJobKey())
                 .send();
 
-        logger.info("Job with the id: {} completed!", jobKey);
+        logger.info("Job with the id: {} completed!", completeJobConfig.getJobKey());
 
         return Mono.fromFuture(future::toCompletableFuture);
     }

@@ -5,11 +5,10 @@ import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import org.dzbank.zielbildbpm.c8demo.orchestrator.one.model.OneEntity;
 import org.dzbank.zielbildbpm.c8demo.orchestrator.one.services.OrchestratorOneService;
+import org.dzbank.zielbildbpm.c8demo.orchestrator.one.workers.ProcessInstanceVariables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 @Component
 @SuppressWarnings("unused")
@@ -27,11 +26,11 @@ public class PersistOneEntityReactiveWorker {
     @SuppressWarnings("unused")
     public void persistOneEntity(final JobClient client, final ActivatedJob job) {
 
-        Map<String, Object> variables = job.getVariablesAsMap();
+        ProcessInstanceVariables variables = job.getVariablesAsType(ProcessInstanceVariables.class);
 
         OneEntity oneEntity = new OneEntity(Long.toString(job.getProcessInstanceKey()), "body one reactive");
         oOneService.createOneEntity(oneEntity)
-                .subscribe(created -> variables.put("oneEntityReactive", created),
+                .subscribe(oneEntityPersisted -> variables.setOneEntity(oneEntityPersisted),
                         error -> {
                             client.newFailCommand(job.getKey())
                                     .retries(job.getRetries() - 1)

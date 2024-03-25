@@ -5,6 +5,7 @@ import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import org.dzbank.zielbildbpm.c8demo.orchestrator.one.model.OneEntity;
 import org.dzbank.zielbildbpm.c8demo.orchestrator.one.services.OrchestratorOneService;
+import org.dzbank.zielbildbpm.c8demo.orchestrator.one.workers.ProcessInstanceVariables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -27,12 +28,12 @@ public class PersistOneEntityStandardWorker {
     @SuppressWarnings("unused")
     public void persistOneEntity(final JobClient client, final ActivatedJob job) {
 
-        Map<String, Object> variables = job.getVariablesAsMap();
+        ProcessInstanceVariables variables = job.getVariablesAsType(ProcessInstanceVariables.class);
 
         OneEntity oneEntity = new OneEntity(Long.toString(job.getProcessInstanceKey()), "body one standard");
         OneEntity oneEntityPersisted = oOneService.createOneEntity(oneEntity).block();
 
-        variables.put("oneEntityStandard", oneEntityPersisted);
+        variables.setOneEntity(oneEntityPersisted);
 
         client.newCompleteCommand(job.getKey())
                 .variables(variables)
