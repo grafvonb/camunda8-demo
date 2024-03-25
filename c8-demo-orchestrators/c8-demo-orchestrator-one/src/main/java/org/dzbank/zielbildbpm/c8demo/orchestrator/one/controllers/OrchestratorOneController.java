@@ -50,7 +50,9 @@ public class OrchestratorOneController {
 
     @PostMapping("complete-job")
     public Mono<CompleteJobResponse> completeJob(@RequestBody CompleteJobConfig completeJobConfig) {
+
         ZeebeFuture<CompleteJobResponse> future = client.newCompleteCommand(completeJobConfig.getJobKey())
+                .variable("completeJobConfig", completeJobConfig)
                 .send();
 
         logger.info("Job with the id: {} completed!", completeJobConfig.getJobKey());

@@ -47,13 +47,21 @@
       </bpmn:startEvent>
       <bpmn:sequenceFlow id="Flow_0xougr0" sourceRef="StartManualInputStart" targetRef="InputTwoEntityBodyTask" />
       <bpmn:endEvent id="ManualInputFinishedEvent" name="Manual&#10;Input&#10;Finisched">
-        <bpmn:incoming>Flow_16d8ldb</bpmn:incoming>
+        <bpmn:incoming>Flow_15hr04x</bpmn:incoming>
       </bpmn:endEvent>
-      <bpmn:sequenceFlow id="Flow_16d8ldb" sourceRef="InputTwoEntityBodyTask" targetRef="ManualInputFinishedEvent" />
       <bpmn:userTask id="InputTwoEntityBodyTask" name="Input TwoEntity Body">
         <bpmn:incoming>Flow_0xougr0</bpmn:incoming>
-        <bpmn:outgoing>Flow_16d8ldb</bpmn:outgoing>
+        <bpmn:outgoing>Flow_1uhc2gf</bpmn:outgoing>
       </bpmn:userTask>
+      <bpmn:serviceTask id="UpdateOneEntityTask" name="Update OneEntity (reactive)">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="updateOneEntityReactiveWorker" retries="5" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_1uhc2gf</bpmn:incoming>
+        <bpmn:outgoing>Flow_15hr04x</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:sequenceFlow id="Flow_15hr04x" sourceRef="UpdateOneEntityTask" targetRef="ManualInputFinishedEvent" />
+      <bpmn:sequenceFlow id="Flow_1uhc2gf" sourceRef="InputTwoEntityBodyTask" targetRef="UpdateOneEntityTask" />
     </bpmn:subProcess>
     <bpmn:exclusiveGateway id="WithUserTasksGateway" name="With User Tasks?" default="Flow_1ih5brx">
       <bpmn:incoming>Flow_0p3m9rn</bpmn:incoming>
@@ -98,13 +106,13 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_19vau50_di" bpmnElement="WorkflowOneEndEvent">
-        <dc:Bounds x="1092" y="99" width="36" height="36" />
+        <dc:Bounds x="1252" y="99" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1084" y="61.5" width="51" height="27" />
+          <dc:Bounds x="1244" y="61.5" width="51" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1xv3dh2_di" bpmnElement="ManualInputSubProcess" isExpanded="true">
-        <dc:Bounds x="720" y="170" width="320" height="163" />
+        <dc:Bounds x="720" y="170" width="470" height="163" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1j8v6as_di" bpmnElement="StartManualInputStart">
@@ -113,23 +121,31 @@
           <dc:Bounds x="744" y="275" width="37" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1k316yr_di" bpmnElement="ManualInputFinishedEvent">
-        <dc:Bounds x="982" y="232" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="977" y="275" width="48" height="40" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0yib6id_di" bpmnElement="InputTwoEntityBodyTask">
         <dc:Bounds x="830" y="210" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_05kgbwu" bpmnElement="UpdateOneEntityTask">
+        <dc:Bounds x="980" y="210" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1k316yr_di" bpmnElement="ManualInputFinishedEvent">
+        <dc:Bounds x="1122" y="232" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1117" y="275" width="48" height="40" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0xougr0_di" bpmnElement="Flow_0xougr0">
         <di:waypoint x="778" y="250" />
         <di:waypoint x="830" y="250" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_16d8ldb_di" bpmnElement="Flow_16d8ldb">
+      <bpmndi:BPMNEdge id="Flow_15hr04x_di" bpmnElement="Flow_15hr04x">
+        <di:waypoint x="1080" y="250" />
+        <di:waypoint x="1122" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1uhc2gf_di" bpmnElement="Flow_1uhc2gf">
         <di:waypoint x="930" y="250" />
-        <di:waypoint x="982" y="250" />
+        <di:waypoint x="980" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0yfw71e_di" bpmnElement="Flow_0yfw71e">
         <di:waypoint x="215" y="117" />
@@ -169,13 +185,13 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_00p96a1_di" bpmnElement="Flow_00p96a1">
-        <di:waypoint x="1040" y="252" />
-        <di:waypoint x="1110" y="252" />
-        <di:waypoint x="1110" y="135" />
+        <di:waypoint x="1190" y="252" />
+        <di:waypoint x="1270" y="252" />
+        <di:waypoint x="1270" y="135" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ih5brx_di" bpmnElement="Flow_1ih5brx">
         <di:waypoint x="685" y="117" />
-        <di:waypoint x="1092" y="117" />
+        <di:waypoint x="1252" y="117" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

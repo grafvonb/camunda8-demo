@@ -32,6 +32,15 @@ public class OrchestratorOneService {
                 .bodyToMono(OneEntity.class);
     }
 
+    public Mono<OneEntity> updateOneEntity(OneEntity entity) {
+        return msOneWebClient.put()
+                .uri("/entities/{id}", entity.getId())
+                .body(Mono.just(entity), OneEntity.class)
+                .retrieve()
+                .bodyToMono(OneEntity.class)
+                .switchIfEmpty(Mono.empty());
+    }
+
     public Flux<OneEntity> retrieveAllOneEntities() {
         return msOneWebClient.get()
                 .uri("/entities")
