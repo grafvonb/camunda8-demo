@@ -12,6 +12,8 @@ public class ProcessInstanceVariables {
 
     private OneEntity oneEntity;
 
+    private String loggerName;
+
     public ProcessInstanceVariables() {
     }
 
@@ -41,5 +43,13 @@ public class ProcessInstanceVariables {
 
     public void setOneEntity(OneEntity oneEntity) {
         this.oneEntity = oneEntity;
+    }
+
+    public String getLoggerName() {
+        return loggerName;
+    }
+
+    public void setLoggerName(String loggerName) {
+        this.loggerName = loggerName;
     }
 }
