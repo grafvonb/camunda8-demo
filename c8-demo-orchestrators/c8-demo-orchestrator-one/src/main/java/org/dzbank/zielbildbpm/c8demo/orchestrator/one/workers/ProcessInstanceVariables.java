@@ -2,6 +2,7 @@ package org.dzbank.zielbildbpm.c8demo.orchestrator.one.workers;
 
 import org.dzbank.zielbildbpm.c8demo.orchestrator.one.configuration.CompleteJobConfig;
 import org.dzbank.zielbildbpm.c8demo.orchestrator.one.configuration.RuntimeConfig;
+import org.dzbank.zielbildbpm.c8demo.orchestrator.one.configuration.SendMessageConfig;
 import org.dzbank.zielbildbpm.c8demo.orchestrator.one.model.OneEntity;
 
 public class ProcessInstanceVariables {
@@ -10,9 +11,9 @@ public class ProcessInstanceVariables {
 
     private CompleteJobConfig completeJobConfig;
 
-    private OneEntity oneEntity;
+    private SendMessageConfig sendMessageConfig;
 
-    private String loggerName;
+    private OneEntity oneEntity;
 
     public ProcessInstanceVariables() {
     }
@@ -45,11 +46,11 @@ public class ProcessInstanceVariables {
         this.oneEntity = oneEntity;
     }
 
-    public String getLoggerName() {
-        return loggerName;
+    public SendMessageConfig getSendMessageConfig() {
+        return sendMessageConfig;
     }
 
-    public void setLoggerName(String loggerName) {
-        this.loggerName = loggerName;
+    public void setSendMessageConfig(SendMessageConfig sendMessageConfig) {
+        this.sendMessageConfig = sendMessageConfig;
     }
 }

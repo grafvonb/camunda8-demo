@@ -21,6 +21,10 @@ public class LogInformationWorker {
 
         ProcessInstanceVariables variables = job.getVariablesAsType(ProcessInstanceVariables.class);
 
-        logger.debug("Logger {} for job {} reached!", variables.getLoggerName(), job.getKey());
+        if (variables.getSendMessageConfig() != null) {
+            logger.debug("Logger {} for job {} reached!", variables.getSendMessageConfig().getMessageName(), job.getKey());
+        } else {
+            logger.debug("Logger reached for job {} but no context available!", job.getKey());
+        }
     }
 }

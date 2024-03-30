@@ -4,8 +4,10 @@ import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.ZeebeFuture;
 import io.camunda.zeebe.client.api.response.CompleteJobResponse;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
+import io.camunda.zeebe.client.api.response.PublishMessageResponse;
 import org.dzbank.zielbildbpm.c8demo.orchestrator.one.configuration.CompleteJobConfig;
 import org.dzbank.zielbildbpm.c8demo.orchestrator.one.configuration.RuntimeConfig;
+import org.dzbank.zielbildbpm.c8demo.orchestrator.one.configuration.SendMessageConfig;
 import org.dzbank.zielbildbpm.c8demo.orchestrator.one.workers.ProcessInstanceVariables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +58,19 @@ public class OrchestratorOneController {
                 .send();
 
         logger.info("Job with the id: {} completed!", completeJobConfig.getJobKey());
+
+        return Mono.fromFuture(future::toCompletableFuture);
+    }
+
+    @PostMapping("send-message")
+    public Mono<PublishMessageResponse> sendMessage(@RequestBody SendMessageConfig sendMessageConfig) {
+
+        ZeebeFuture<PublishMessageResponse> future = client.newPublishMessageCommand()
+                .messageName(sendMessageConfig.getMessageName())
+                .correlationKey(sendMessageConfig.getMessageCorrelationKey())
+                .send();
+
+        logger.info("{} message with body '{}' was sent!", sendMessageConfig.getMessageName(), sendMessageConfig.getMessageBody());
 
         return Mono.fromFuture(future::toCompletableFuture);
     }

@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1yatkv4" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.21.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.4.0">
+  <bpmn:process id="C8DemoWorkflowOne" name="C8 Demo Workflow One" isExecutable="true">
+    <bpmn:startEvent id="WorkflowOneStartEvent" name="Worflow One&#10;to be started">
+      <bpmn:outgoing>Flow_0yfw71e</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0yfw71e" sourceRef="WorkflowOneStartEvent" targetRef="IsReactiveGateway" />
+    <bpmn:endEvent id="WorkflowOneEndEvent" name="Workflow completed">
+      <bpmn:incoming>Flow_00p96a1</bpmn:incoming>
+      <bpmn:incoming>Flow_020spx0</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="PersistReactiveOneEntityTask" name="Persist OneEntity (reactive)">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="persistOneEntityReactiveWorker" retries="5" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1qies5s</bpmn:incoming>
+      <bpmn:outgoing>Flow_0k2vf8g</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0tsqspi" name="false" sourceRef="IsReactiveGateway" targetRef="PersistStandardOneEntityTask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=runtimeConfig.isReactive = false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0s88lfj" sourceRef="PersistStandardOneEntityTask" targetRef="MergeGateway1" />
+    <bpmn:serviceTask id="PersistStandardOneEntityTask" name="Persist OneEntity (blocking)">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="persistOneEntityStandardWorker" retries="5" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0tsqspi</bpmn:incoming>
+      <bpmn:outgoing>Flow_0s88lfj</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="IsReactiveGateway" name="Is Reactive?" default="Flow_1qies5s">
+      <bpmn:incoming>Flow_0yfw71e</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qies5s</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0tsqspi</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1qies5s" sourceRef="IsReactiveGateway" targetRef="PersistReactiveOneEntityTask" />
+    <bpmn:exclusiveGateway id="MergeGateway1">
+      <bpmn:incoming>Flow_0k2vf8g</bpmn:incoming>
+      <bpmn:incoming>Flow_0s88lfj</bpmn:incoming>
+      <bpmn:outgoing>Flow_0p3m9rn</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0k2vf8g" sourceRef="PersistReactiveOneEntityTask" targetRef="MergeGateway1" />
+    <bpmn:subProcess id="ManualInputSubProcess" name="Manual Input">
+      <bpmn:incoming>Flow_1u664tj</bpmn:incoming>
+      <bpmn:outgoing>Flow_00p96a1</bpmn:outgoing>
+      <bpmn:startEvent id="StartManualInputStart" name="Start&#10;Manual&#10;Input">
+        <bpmn:outgoing>Flow_0xougr0</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_0xougr0" sourceRef="StartManualInputStart" targetRef="InputTwoEntityBodyTask" />
+      <bpmn:endEvent id="ManualInputFinishedEvent" name="Manual&#10;Input&#10;Finisched">
+        <bpmn:incoming>Flow_15hr04x</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:userTask id="InputTwoEntityBodyTask" name="Input TwoEntity Body">
+        <bpmn:incoming>Flow_0xougr0</bpmn:incoming>
+        <bpmn:outgoing>Flow_1uhc2gf</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:serviceTask id="UpdateOneEntityTask" name="Update OneEntity (reactive)">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="updateOneEntityReactiveWorker" retries="5" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0x7zw2a</bpmn:incoming>
+        <bpmn:outgoing>Flow_15hr04x</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:sequenceFlow id="Flow_15hr04x" sourceRef="UpdateOneEntityTask" targetRef="ManualInputFinishedEvent" />
+      <bpmn:sequenceFlow id="Flow_1uhc2gf" sourceRef="InputTwoEntityBodyTask" targetRef="InputProvidedEvent" />
+      <bpmn:sequenceFlow id="Flow_0x7zw2a" sourceRef="InputProvidedEvent" targetRef="UpdateOneEntityTask" />
+      <bpmn:intermediateThrowEvent id="InputProvidedEvent" name="Input provided">
+        <bpmn:incoming>Flow_1uhc2gf</bpmn:incoming>
+        <bpmn:outgoing>Flow_0x7zw2a</bpmn:outgoing>
+        <bpmn:escalationEventDefinition id="EscalationEventDefinition_1ccpc0d" escalationRef="Escalation_2hadddk" />
+      </bpmn:intermediateThrowEvent>
+    </bpmn:subProcess>
+    <bpmn:exclusiveGateway id="WithUserTasksGateway" name="With User Tasks?" default="Flow_1ih5brx">
+      <bpmn:incoming>Flow_0p3m9rn</bpmn:incoming>
+      <bpmn:outgoing>Flow_1u664tj</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1ih5brx</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0p3m9rn" sourceRef="MergeGateway1" targetRef="WithUserTasksGateway" />
+    <bpmn:sequenceFlow id="Flow_1u664tj" name="true" sourceRef="WithUserTasksGateway" targetRef="ManualInputSubProcess">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=runtimeConfig.withUserTasks = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_00p96a1" sourceRef="ManualInputSubProcess" targetRef="WorkflowOneEndEvent" />
+    <bpmn:sequenceFlow id="Flow_1ih5brx" sourceRef="WithUserTasksGateway" targetRef="LogNoUserTasksEvent" />
+    <bpmn:sequenceFlow id="Flow_09vdfk8" sourceRef="Event_1iz0hjd" targetRef="LogInformation1Task" />
+    <bpmn:endEvent id="Event_0x5jf32">
+      <bpmn:incoming>Flow_07imo2g</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_07imo2g" sourceRef="LogInformation1Task" targetRef="Event_0x5jf32" />
+    <bpmn:serviceTask id="LogInformation1Task" name="Log&#10;information">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="logInformationWorker" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;Input Provided&#34;" target="loggerName" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_09vdfk8</bpmn:incoming>
+      <bpmn:outgoing>Flow_07imo2g</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="Event_1iz0hjd" cancelActivity="false" attachedToRef="ManualInputSubProcess">
+      <bpmn:outgoing>Flow_09vdfk8</bpmn:outgoing>
+      <bpmn:escalationEventDefinition id="EscalationEventDefinition_1updlei" />
+    </bpmn:boundaryEvent>
+    <bpmn:subProcess id="PingerSubProcess" name="Pinger" triggeredByEvent="true">
+      <bpmn:startEvent id="PingGeneratorEvent" name="Ping&#10;generated" isInterrupting="false">
+        <bpmn:extensionElements>
+          <zeebe:ioMapping>
+            <zeebe:output source="={&#10;  &#34;messageName&#34;: &#34;ping&#34;,&#10;  &#34;messageCorrelationKey&#34;: &#34;pingKey&#34;,&#10;  &#34;messageBody&#34;: &#34;ping body&#34;&#10;}" target="sendMessageConfig" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+        <bpmn:outgoing>Flow_0ybql6u</bpmn:outgoing>
+        <bpmn:timerEventDefinition id="TimerEventDefinition_0exludp">
+          <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R5/PT1S</bpmn:timeCycle>
+        </bpmn:timerEventDefinition>
+      </bpmn:startEvent>
+      <bpmn:serviceTask id="LogInformation2Task" name="Log&#10;information">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="logInformationWorker" />
+          <zeebe:ioMapping>
+            <zeebe:input source="=&#34;Pinger&#34;" target="loggerName" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0ybql6u</bpmn:incoming>
+        <bpmn:outgoing>Flow_0p6j3sr</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:sequenceFlow id="Flow_0ybql6u" sourceRef="PingGeneratorEvent" targetRef="LogInformation2Task" />
+      <bpmn:endEvent id="PingCompletedEvent" name="Ping&#10;completed">
+        <bpmn:incoming>Flow_0p6j3sr</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_0p6j3sr" sourceRef="LogInformation2Task" targetRef="PingCompletedEvent" />
+    </bpmn:subProcess>
+    <bpmn:subProcess id="CancellerSubProcess" name="Canceller" triggeredByEvent="true">
+      <bpmn:startEvent id="CancelMessageStartEvent" name="Cancellation&#10;started">
+        <bpmn:extensionElements />
+        <bpmn:outgoing>Flow_0bbzzlv</bpmn:outgoing>
+        <bpmn:messageEventDefinition id="MessageEventDefinition_0yv2lie" messageRef="Message_176j894" />
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_0bbzzlv" sourceRef="CancelMessageStartEvent" targetRef="LogInformation3Task" />
+      <bpmn:endEvent id="CancelCompletedEvent" name="Cancellation&#10;completed">
+        <bpmn:incoming>Flow_0vgdc5t</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_0vgdc5t" sourceRef="LogInformation3Task" targetRef="CancelCompletedEvent" />
+      <bpmn:serviceTask id="LogInformation3Task" name="Log&#10;information">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="logInformationWorker" />
+          <zeebe:ioMapping>
+            <zeebe:input source="=&#34;Canceller&#34;" target="loggerName" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0bbzzlv</bpmn:incoming>
+        <bpmn:outgoing>Flow_0vgdc5t</bpmn:outgoing>
+      </bpmn:serviceTask>
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="Flow_020spx0" sourceRef="LogNoUserTasksEvent" targetRef="WorkflowOneEndEvent" />
+    <bpmn:intermediateThrowEvent id="LogNoUserTasksEvent" name="Log No User Tasks">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="logInformationWorker" />
+        <zeebe:ioMapping>
+          <zeebe:output source="=&#34;running path without user tasks&#34;" target="loggerMessage" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ih5brx</bpmn:incoming>
+      <bpmn:outgoing>Flow_020spx0</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_17hut40" />
+    </bpmn:intermediateThrowEvent>
+  </bpmn:process>
+  <bpmn:escalation id="Escalation_2hadddk" name="InputProvidedEscalation" escalationCode="=&#34;inputProvided&#34;" />
+  <bpmn:message id="Message_176j894" name="cancelAndLogMessage">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=&#34;cancelAndLogMsg&#34;" />
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="Message_3fmkrvp" name="PingOnMessage">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=&#34;ping on message&#34;" />
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="C8DemoWorkflowOne">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="WorkflowOneStartEvent">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="167" y="142" width="64" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_19vau50_di" bpmnElement="WorkflowOneEndEvent">
+        <dc:Bounds x="1332" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1324" y="62" width="51" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1az6f51_di" bpmnElement="PersistReactiveOneEntityTask">
+        <dc:Bounds x="370" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_03voujb_di" bpmnElement="PersistStandardOneEntityTask">
+        <dc:Bounds x="370" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_00n27a8_di" bpmnElement="IsReactiveGateway" isMarkerVisible="true">
+        <dc:Bounds x="265" y="92" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="259" y="73" width="61" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0p7niyf_di" bpmnElement="MergeGateway1" isMarkerVisible="true">
+        <dc:Bounds x="525" y="92" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0takjup_di" bpmnElement="LogNoUserTasksEvent">
+        <dc:Bounds x="720" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="708" y="142" width="62" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1w4bsl8_di" bpmnElement="WithUserTasksGateway" isMarkerVisible="true">
+        <dc:Bounds x="635" y="92" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="617" y="73" width="86" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0x5jf32_di" bpmnElement="Event_0x5jf32">
+        <dc:Bounds x="1202" y="402" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_06bnuw0_di" bpmnElement="LogInformation1Task">
+        <dc:Bounds x="1050" y="380" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0b3mdhl_di" bpmnElement="PingerSubProcess" isExpanded="true">
+        <dc:Bounds x="180" y="510" width="350" height="160" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0mrua71_di" bpmnElement="PingGeneratorEvent">
+        <dc:Bounds x="220" y="572" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="214" y="615" width="50" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0qntb0z_di" bpmnElement="LogInformation2Task">
+        <dc:Bounds x="310" y="550" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0sv73q7_di" bpmnElement="PingCompletedEvent">
+        <dc:Bounds x="457" y="572" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="452" y="615" width="51" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0ybql6u_di" bpmnElement="Flow_0ybql6u">
+        <di:waypoint x="256" y="590" />
+        <di:waypoint x="310" y="590" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0p6j3sr_di" bpmnElement="Flow_0p6j3sr">
+        <di:waypoint x="410" y="590" />
+        <di:waypoint x="457" y="590" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_1m68jo8_di" bpmnElement="CancellerSubProcess" isExpanded="true">
+        <dc:Bounds x="600" y="510" width="378" height="160" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1qgn09f_di" bpmnElement="CancelMessageStartEvent">
+        <dc:Bounds x="650" y="572" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="640" y="615" width="61" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0nkqin9_di" bpmnElement="CancelCompletedEvent">
+        <dc:Bounds x="902" y="572" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="893" y="615" width="61" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1dkncja_di" bpmnElement="LogInformation3Task">
+        <dc:Bounds x="740" y="550" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0bbzzlv_di" bpmnElement="Flow_0bbzzlv">
+        <di:waypoint x="686" y="590" />
+        <di:waypoint x="740" y="590" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vgdc5t_di" bpmnElement="Flow_0vgdc5t">
+        <di:waypoint x="840" y="590" />
+        <di:waypoint x="902" y="590" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_1xv3dh2_di" bpmnElement="ManualInputSubProcess" isExpanded="true">
+        <dc:Bounds x="710" y="180" width="590" height="163" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1j8v6as_di" bpmnElement="StartManualInputStart">
+        <dc:Bounds x="732" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="734" y="285" width="37" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1k316yr_di" bpmnElement="ManualInputFinishedEvent">
+        <dc:Bounds x="1172" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1167" y="285" width="48" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0yib6id_di" bpmnElement="InputTwoEntityBodyTask">
+        <dc:Bounds x="820" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_05kgbwu" bpmnElement="UpdateOneEntityTask">
+        <dc:Bounds x="1030" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1fkylq9_di" bpmnElement="InputProvidedEvent">
+        <dc:Bounds x="952" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="936" y="285" width="70" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0xougr0_di" bpmnElement="Flow_0xougr0">
+        <di:waypoint x="768" y="260" />
+        <di:waypoint x="820" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15hr04x_di" bpmnElement="Flow_15hr04x">
+        <di:waypoint x="1130" y="260" />
+        <di:waypoint x="1172" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1uhc2gf_di" bpmnElement="Flow_1uhc2gf">
+        <di:waypoint x="920" y="260" />
+        <di:waypoint x="952" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0x7zw2a_di" bpmnElement="Flow_0x7zw2a">
+        <di:waypoint x="988" y="260" />
+        <di:waypoint x="1030" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_11grfur_di" bpmnElement="Event_1iz0hjd">
+        <dc:Bounds x="952" y="325" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0yfw71e_di" bpmnElement="Flow_0yfw71e">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="265" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0tsqspi_di" bpmnElement="Flow_0tsqspi">
+        <di:waypoint x="290" y="142" />
+        <di:waypoint x="290" y="220" />
+        <di:waypoint x="370" y="220" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="293" y="178" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0s88lfj_di" bpmnElement="Flow_0s88lfj">
+        <di:waypoint x="470" y="220" />
+        <di:waypoint x="550" y="220" />
+        <di:waypoint x="550" y="142" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qies5s_di" bpmnElement="Flow_1qies5s">
+        <di:waypoint x="315" y="117" />
+        <di:waypoint x="370" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0k2vf8g_di" bpmnElement="Flow_0k2vf8g">
+        <di:waypoint x="470" y="117" />
+        <di:waypoint x="525" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0p3m9rn_di" bpmnElement="Flow_0p3m9rn">
+        <di:waypoint x="575" y="117" />
+        <di:waypoint x="635" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1u664tj_di" bpmnElement="Flow_1u664tj">
+        <di:waypoint x="660" y="142" />
+        <di:waypoint x="660" y="262" />
+        <di:waypoint x="710" y="262" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="666" y="199" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00p96a1_di" bpmnElement="Flow_00p96a1">
+        <di:waypoint x="1300" y="262" />
+        <di:waypoint x="1350" y="262" />
+        <di:waypoint x="1350" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ih5brx_di" bpmnElement="Flow_1ih5brx">
+        <di:waypoint x="685" y="117" />
+        <di:waypoint x="720" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09vdfk8_di" bpmnElement="Flow_09vdfk8">
+        <di:waypoint x="970" y="361" />
+        <di:waypoint x="970" y="420" />
+        <di:waypoint x="1050" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07imo2g_di" bpmnElement="Flow_07imo2g">
+        <di:waypoint x="1150" y="420" />
+        <di:waypoint x="1202" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_020spx0_di" bpmnElement="Flow_020spx0">
+        <di:waypoint x="756" y="117" />
+        <di:waypoint x="1332" y="117" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
