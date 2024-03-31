@@ -68,6 +68,8 @@ public class OrchestratorOneController {
         ZeebeFuture<PublishMessageResponse> future = client.newPublishMessageCommand()
                 .messageName(sendMessageConfig.getMessageName())
                 .correlationKey(sendMessageConfig.getMessageCorrelationKey())
+                .variable("sendMessageConfig", sendMessageConfig)
+                .timeToLive(Duration.ofMinutes(1))
                 .send();
 
         logger.info("{} message with body '{}' was sent!", sendMessageConfig.getMessageName(), sendMessageConfig.getMessageBody());

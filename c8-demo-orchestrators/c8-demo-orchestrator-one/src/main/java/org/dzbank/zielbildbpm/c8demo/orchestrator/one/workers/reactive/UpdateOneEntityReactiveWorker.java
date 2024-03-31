@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 @SuppressWarnings("unused")
 public class UpdateOneEntityReactiveWorker {
@@ -44,6 +46,8 @@ public class UpdateOneEntityReactiveWorker {
                             logger.debug("UpdateOneEntity reactive way system task {} failed (attempts left: {}).", job.getKey(), job.getRetries() - 1);
                         },
                         () -> {
+                            UUID messageCorrelationKey = UUID.randomUUID();
+                            variables.setMessageCorrelationKey(messageCorrelationKey);
                             client.newCompleteCommand(job.getKey())
                                     .variables(variables)
                                     .send()
@@ -51,7 +55,7 @@ public class UpdateOneEntityReactiveWorker {
                                     .exceptionally(throwable -> {
                                         throw new RuntimeException("Could not complete job " + job, throwable);
                                     });
-                            logger.debug("UpdateOneEntity reactive way system task {} completed!", job.getKey());
+                            logger.debug("UpdateOneEntity reactive way system task {} completed, with message correlation key {}", job.getKey(), messageCorrelationKey);
                         });
     }
 }
