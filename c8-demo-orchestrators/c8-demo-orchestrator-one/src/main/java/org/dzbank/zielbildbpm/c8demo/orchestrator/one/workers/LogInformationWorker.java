@@ -24,7 +24,7 @@ public class LogInformationWorker {
         if (variables.getSendMessageConfig() != null) {
             logger.debug("Logger {} for job {} reached!", variables.getSendMessageConfig().getMessageName(), job.getKey());
         } else {
-            logger.debug("Logger reached for job {} but no context available!", job.getKey());
+            logger.debug("Logger {} reached for job {} but no context available!", job.getVariablesAsMap().get("loggerName"), job.getKey());
         }
     }
 }
