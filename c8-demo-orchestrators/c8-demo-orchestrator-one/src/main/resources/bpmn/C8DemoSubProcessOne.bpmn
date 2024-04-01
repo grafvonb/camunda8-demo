@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0m0syhu" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.21.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.4.0">
+  <bpmn:process id="C8DemoSubProcessOne" name="C8 Demo Sub Process One" isExecutable="true">
+    <bpmn:startEvent id="SubProcessStartEvent2" name="Sub Process&#10;to be started">
+      <bpmn:outgoing>Flow_0gxi317</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0gxi317" sourceRef="SubProcessStartEvent2" targetRef="LogSubProcessTask" />
+    <bpmn:endEvent id="SubProcessCompletedEvent2" name="Sub Process&#10;completed">
+      <bpmn:incoming>Flow_1b9a12h</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1b9a12h" sourceRef="LogSubProcessTask" targetRef="SubProcessCompletedEvent2" />
+    <bpmn:serviceTask id="LogSubProcessTask" name="Log&#10;Sub Process">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="logInformationWorker" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;Sub Process&#34;" target="loggerName" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0gxi317</bpmn:incoming>
+      <bpmn:outgoing>Flow_1b9a12h</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="C8DemoSubProcessOne">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="SubProcessStartEvent2">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="167" y="142" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1npdz1n_di" bpmnElement="LogSubProcessTask">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0y6wpgn_di" bpmnElement="SubProcessCompletedEvent2">
+        <dc:Bounds x="422" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="409" y="142" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0gxi317_di" bpmnElement="Flow_0gxi317">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1b9a12h_di" bpmnElement="Flow_1b9a12h">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="422" y="117" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

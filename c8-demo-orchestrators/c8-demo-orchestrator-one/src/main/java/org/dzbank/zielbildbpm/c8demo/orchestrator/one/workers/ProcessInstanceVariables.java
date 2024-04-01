@@ -4,7 +4,9 @@ import org.dzbank.zielbildbpm.c8demo.orchestrator.one.configuration.CompleteJobC
 import org.dzbank.zielbildbpm.c8demo.orchestrator.one.configuration.RuntimeConfig;
 import org.dzbank.zielbildbpm.c8demo.orchestrator.one.configuration.SendMessageConfig;
 import org.dzbank.zielbildbpm.c8demo.orchestrator.one.model.OneEntity;
+import org.dzbank.zielbildbpm.c8demo.orchestrator.one.model.TwoEntity;
 
+import java.util.List;
 import java.util.UUID;
 
 public class ProcessInstanceVariables {
@@ -16,6 +18,8 @@ public class ProcessInstanceVariables {
     private SendMessageConfig sendMessageConfig;
 
     private OneEntity oneEntity;
+
+    List<TwoEntity> twoEntities;
 
     private UUID messageCorrelationKey;
 
@@ -64,5 +68,13 @@ public class ProcessInstanceVariables {
 
     public void setMessageCorrelationKey(UUID messageCorrelationKey) {
         this.messageCorrelationKey = messageCorrelationKey;
+    }
+
+    public List<TwoEntity> getTwoEntities() {
+        return twoEntities;
+    }
+
+    public void setTwoEntities(List<TwoEntity> twoEntities) {
+        this.twoEntities = twoEntities;
     }
 }

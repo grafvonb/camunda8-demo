@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="C8DemoWorkflowDefinitions" name="C8 Demo Workflow Definitions" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.21.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.4.0">
+  <decision id="DemoDecision" name="Demo Decision">
+    <informationRequirement id="InformationRequirement_0c39gfo">
+      <requiredDecision href="#DemoPreDecision" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_01djp8p">
+      <input id="Input_1">
+        <inputExpression id="InputExpression_1" typeRef="string">
+          <text>season</text>
+        </inputExpression>
+        <inputValues id="UnaryTests_1412dx2">
+          <text>"Spring","Summer","Autumn","Winter"</text>
+        </inputValues>
+      </input>
+      <output id="Output_1" name="seasonValue" typeRef="number" biodi:width="192" />
+      <rule id="DecisionRule_1htne8u">
+        <inputEntry id="UnaryTests_0b68e9h">
+          <text>"Spring"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0lz7yfs">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1i81u7h">
+        <inputEntry id="UnaryTests_009kr63">
+          <text>"Summer","Autumn"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0sidewa">
+          <text>2</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0qhuhlh">
+        <inputEntry id="UnaryTests_1a00cdk">
+          <text>"Winter"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1tqma3i">
+          <text>3</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="DemoPreDecision" name="Demo Pre-Decision">
+    <decisionTable id="DecisionTable_1f8lscd">
+      <input id="InputClause_0rjbdwu">
+        <inputExpression id="LiteralExpression_0xofrrb" typeRef="number">
+          <text>week of year(now())</text>
+        </inputExpression>
+      </input>
+      <output id="OutputClause_0o1q5a8" name="season" typeRef="string">
+        <outputValues id="UnaryTests_1w543gy">
+          <text>"Spring","Summer","Autumn","Winter"</text>
+        </outputValues>
+      </output>
+      <rule id="DecisionRule_1jt3r06">
+        <inputEntry id="UnaryTests_14tjc8k">
+          <text>[9..22]</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1knsnkc">
+          <text>"Spring"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0t3tgp6">
+        <inputEntry id="UnaryTests_028plep">
+          <text>[23..35]</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0d5egyg">
+          <text>"Summer"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_027euca">
+        <inputEntry id="UnaryTests_19m5evc">
+          <text>[36..48]</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_13wt1e3">
+          <text>"Autumn"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0ng4it4">
+        <inputEntry id="UnaryTests_058vebz">
+          <text>[49..52]</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1bcfe5q">
+          <text>"Winter"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1euqjz6">
+        <inputEntry id="UnaryTests_1td0hfy">
+          <text>[1..8]</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0qijwle">
+          <text>"Winter"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="DemoDecision">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_0vk1hff" dmnElementRef="InformationRequirement_0c39gfo">
+        <di:waypoint x="250" y="250" />
+        <di:waypoint x="250" y="200" />
+        <di:waypoint x="250" y="180" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DMNShape_06n268b" dmnElementRef="DemoPreDecision">
+        <dc:Bounds height="80" width="180" x="160" y="250" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

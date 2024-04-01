@@ -6,7 +6,7 @@ public class RuntimeConfig {
 
     private boolean isReactive = true;
 
-    private boolean tryUnstable;
+    private boolean tryUnstable = true;
 
     private boolean withUserTasks;
 
