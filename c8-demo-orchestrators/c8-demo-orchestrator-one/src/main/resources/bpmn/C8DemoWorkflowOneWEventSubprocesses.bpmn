@@ -303,7 +303,7 @@
     </bpmn:endEvent>
     <bpmn:serviceTask id="CompensatePersistedDataTask" name="Compensate&#10;persisted data">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="compensatePersistedDataTask" />
+        <zeebe:taskDefinition type="compensatePersistedDataWorker" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_06781cp</bpmn:incoming>
       <bpmn:outgoing>Flow_1qej9qo</bpmn:outgoing>

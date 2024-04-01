@@ -2,6 +2,7 @@ package org.dzbank.zielbildbpm.c8demo.orchestrator.one;
 
 import io.camunda.zeebe.client.ZeebeClient;
 import org.dzbank.zielbildbpm.c8demo.orchestrator.one.services.OrchestratorOneService;
+import org.dzbank.zielbildbpm.c8demo.orchestrator.one.workers.reactive.CompensatePersistedDataReactiveWorker;
 import org.dzbank.zielbildbpm.c8demo.orchestrator.one.workers.reactive.PersistReactiveTwoEntitiesReactiveWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,12 @@ public class OrchestratorOneStartupRunner implements CommandLineRunner {
                 .jobType("persistReactiveTwoEntitiesWorker")
                 .handler(new PersistReactiveTwoEntitiesReactiveWorker(oOneService))
                 .name("Persist Reactive TwoEntities Worker")
+                .open();
+
+        client.newWorker()
+                .jobType("compensatePersistedDataWorker")
+                .handler(new CompensatePersistedDataReactiveWorker(oOneService))
+                .name("Compensate Persisted Data Worker")
                 .open();
     }
 }
