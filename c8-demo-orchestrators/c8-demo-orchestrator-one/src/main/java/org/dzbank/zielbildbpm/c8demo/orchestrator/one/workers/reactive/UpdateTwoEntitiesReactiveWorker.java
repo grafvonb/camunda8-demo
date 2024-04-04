@@ -3,8 +3,6 @@ package org.dzbank.zielbildbpm.c8demo.orchestrator.one.workers.reactive;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
-import org.dzbank.zielbildbpm.c8demo.orchestrator.one.model.OneEntity;
-import org.dzbank.zielbildbpm.c8demo.orchestrator.one.model.TwoEntity;
 import org.dzbank.zielbildbpm.c8demo.orchestrator.one.services.OrchestratorOneService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

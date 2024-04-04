@@ -1,0 +1,117 @@
+{
+  "_index": "zeebe-record_process-instance_8.4.2_2024-04-04",
+  "_id": "1-19849",
+  "_version": 1,
+  "_score": 0,
+  "_routing": "1",
+  "_source": {
+    "partitionId": 1,
+    "value": {
+      "version": 1,
+      "processInstanceKey": 2251799813695121,
+      "tenantId": "<default>",
+      "bpmnProcessId": "C8DemoWorkflowOne",
+      "processDefinitionKey": 2251799813685522,
+      "elementId": "C8DemoWorkflowOne",
+      "bpmnElementType": "PROCESS",
+      "flowScopeKey": -1,
+      "bpmnEventType": "UNSPECIFIED",
+      "parentProcessInstanceKey": -1,
+      "parentElementInstanceKey": -1
+    },
+    "key": 2251799813695121,
+    "timestamp": 1712214795748,
+    "position": 19849,
+    "valueType": "PROCESS_INSTANCE",
+    "brokerVersion": "8.4.2",
+    "recordType": "EVENT",
+    "sourceRecordPosition": 19832,
+    "intent": "ELEMENT_COMPLETED",
+    "rejectionType": "NULL_VAL",
+    "rejectionReason": "",
+    "authorizations": {
+      "authorized_tenants": [
+        "<default>"
+      ]
+    },
+    "recordVersion": 1,
+    "sequence": 2251799813685290
+  },
+  "fields": {
+    "value.parentProcessInstanceKey": [
+      -1
+    ],
+    "sourceRecordPosition": [
+      19832
+    ],
+    "rejectionType": [
+      "NULL_VAL"
+    ],
+    "recordVersion": [
+      1
+    ],
+    "value.parentElementInstanceKey": [
+      -1
+    ],
+    "valueType": [
+      "PROCESS_INSTANCE"
+    ],
+    "value.elementId": [
+      "C8DemoWorkflowOne"
+    ],
+    "key": [
+      2251799813695121
+    ],
+    "timestamp": [
+      "2024-04-04T07:13:15.748Z"
+    ],
+    "value.processInstanceKey": [
+      2251799813695121
+    ],
+    "value.processDefinitionKey": [
+      2251799813685522
+    ],
+    "partitionId": [
+      1
+    ],
+    "recordType": [
+      "EVENT"
+    ],
+    "value.flowScopeKey": [
+      -1
+    ],
+    "brokerVersion": [
+      "8.4.2"
+    ],
+    "intent": [
+      "ELEMENT_COMPLETED"
+    ],
+    "value.version": [
+      1
+    ],
+    "sequence": [
+      2251799813685290
+    ],
+    "value.bpmnProcessId": [
+      "C8DemoWorkflowOne"
+    ],
+    "value.bpmnEventType": [
+      "UNSPECIFIED"
+    ],
+    "value.tenantId": [
+      "<default>"
+    ],
+    "position": [
+      19849
+    ],
+    "rejectionReason": [
+      ""
+    ],
+    "value.bpmnElementType": [
+      "PROCESS"
+    ],
+    "authorizations.authorized_tenants": [
+      "<default>"
+    ]
+  }
+}

@@ -16,15 +16,14 @@ public class LogInformationWorker {
     private static final Logger logger = LoggerFactory.getLogger(LogInformationWorker.class);
 
     @JobWorker(type = "logInformationWorker")
-    @SuppressWarnings("unused")
-    public void persistOneEntity(final JobClient client, final ActivatedJob job) {
+    public void logInformationWorker(final JobClient client, final ActivatedJob job) {
 
         ProcessInstanceVariables variables = job.getVariablesAsType(ProcessInstanceVariables.class);
 
         if (variables.getSendMessageConfig() != null) {
-            logger.debug("Logger {} for job {} reached!", variables.getSendMessageConfig().getMessageName(), job.getKey());
+            logger.debug("Logger {} for business correlation {} for job {} reached!", variables.getSendMessageConfig().getMessageName(), variables.getBusinessCorrelationId(), job.getKey());
         } else {
-            logger.debug("Logger {} reached for job {} but no context available!", job.getVariablesAsMap().get("loggerName"), job.getKey());
+            logger.debug("Logger {} for business correlation {} reached for job {} but no context available!", job.getVariablesAsMap().get("loggerName"), variables.getBusinessCorrelationId(), job.getKey());
         }
     }
 }

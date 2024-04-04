@@ -23,12 +23,11 @@ public class PersistOneEntityReactiveWorker {
     }
 
     @JobWorker(type = "persistOneEntityReactiveWorker", autoComplete = false)
-    @SuppressWarnings("unused")
     public void persistOneEntity(final JobClient client, final ActivatedJob job) {
 
         ProcessInstanceVariables variables = job.getVariablesAsType(ProcessInstanceVariables.class);
 
-        OneEntity oneEntity = new OneEntity(Long.toString(job.getProcessInstanceKey()), "body one reactive");
+        OneEntity oneEntity = new OneEntity(variables.getBusinessCorrelationId().toString(), "body one reactive");
         oOneService.createOneEntity(oneEntity)
                 .subscribe(oneEntityPersisted -> variables.setOneEntity(oneEntityPersisted),
                         error -> {

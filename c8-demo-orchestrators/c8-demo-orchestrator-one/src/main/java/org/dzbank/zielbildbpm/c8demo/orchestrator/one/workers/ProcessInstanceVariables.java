@@ -11,6 +11,8 @@ import java.util.UUID;
 
 public class ProcessInstanceVariables {
 
+    private UUID businessCorrelationId;
+
     private RuntimeConfig runtimeConfig;
 
     private CompleteJobConfig completeJobConfig;
@@ -24,10 +26,16 @@ public class ProcessInstanceVariables {
     private UUID messageCorrelationKey;
 
     public ProcessInstanceVariables() {
+        this(null);
     }
 
     public ProcessInstanceVariables(RuntimeConfig runtimeConfig) {
+        this.businessCorrelationId = UUID.randomUUID();
         this.runtimeConfig = runtimeConfig;
+    }
+
+    public UUID getBusinessCorrelationId() {
+        return businessCorrelationId;
     }
 
     public RuntimeConfig getRuntimeConfig() {

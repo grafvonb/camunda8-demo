@@ -25,7 +25,6 @@ public class UpdateOneEntityReactiveWorker {
     }
 
     @JobWorker(type = "updateOneEntityReactiveWorker", autoComplete = false)
-    @SuppressWarnings("unused")
     public void updateOneEntity(final JobClient client, final ActivatedJob job) {
 
         ProcessInstanceVariables variables = job.getVariablesAsType(ProcessInstanceVariables.class);

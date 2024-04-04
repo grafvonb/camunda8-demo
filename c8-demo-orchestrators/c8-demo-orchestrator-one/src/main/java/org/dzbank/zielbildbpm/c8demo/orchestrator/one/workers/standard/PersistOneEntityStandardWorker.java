@@ -25,12 +25,11 @@ public class PersistOneEntityStandardWorker {
     }
 
     @JobWorker(type = "persistOneEntityStandardWorker", autoComplete = false)
-    @SuppressWarnings("unused")
     public void persistOneEntity(final JobClient client, final ActivatedJob job) {
 
         ProcessInstanceVariables variables = job.getVariablesAsType(ProcessInstanceVariables.class);
 
-        OneEntity oneEntity = new OneEntity(Long.toString(job.getProcessInstanceKey()), "body one standard");
+        OneEntity oneEntity = new OneEntity(variables.getBusinessCorrelationId().toString(), "body one standard");
         OneEntity oneEntityPersisted = oOneService.createOneEntity(oneEntity).block();
 
         variables.setOneEntity(oneEntityPersisted);
