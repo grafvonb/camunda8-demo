@@ -1,7 +1,8 @@
 package org.dzbank.zielbildbpm.c8demo.orchestrator.one;
 
+import io.camunda.common.auth.*;
+import io.camunda.operate.CamundaOperateClient;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.epoll.EpollChannelOption;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -37,5 +38,22 @@ public class OrchestratorOneConfiguration {
     @Bean
     public WebClient webClient(WebClient.Builder builder) {
         return builder.build();
+    }
+
+    @Bean
+    public CamundaOperateClient operateClient() {
+
+        SimpleConfig config = new SimpleConfig();
+        config.addProduct(Product.OPERATE, new SimpleCredential("demo", "demo"));
+
+        Authentication sa = SimpleAuthentication.builder()
+                .withSimpleConfig(config)
+                .withSimpleUrl("http://localhost:8081")
+                .build();
+
+        return CamundaOperateClient.builder()
+                .operateUrl("http://localhost:8081")
+                .authentication(sa)
+                .setup().build();
     }
 }
