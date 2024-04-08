@@ -10,6 +10,8 @@ public class RuntimeConfig {
 
     private boolean withUserTasks;
 
+    private boolean withSubProcesses;
+
     public RuntimeConfig() {
     }
 
@@ -50,5 +52,13 @@ public class RuntimeConfig {
 
     public void setWithUserTasks(boolean withUserTasks) {
         this.withUserTasks = withUserTasks;
+    }
+
+    public boolean isWithSubProcesses() {
+        return withSubProcesses;
+    }
+
+    public void setWithSubProcesses(boolean withSubProcesses) {
+        this.withSubProcesses = withSubProcesses;
     }
 }
