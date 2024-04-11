@@ -7,7 +7,6 @@ public class SendMessageConfig {
 
     private String messageCorrelationKey;
 
-
     private String messageBody;
 
     public SendMessageConfig() {

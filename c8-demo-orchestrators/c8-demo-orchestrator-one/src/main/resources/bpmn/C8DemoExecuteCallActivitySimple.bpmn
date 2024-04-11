@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_03qoh4i" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.22.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.5.0">
+  <bpmn:process id="C8DemoExecuteCallActivitySimple" name="C8 Demo Execute Call Activity Simple" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_1ily2ms</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1ily2ms" sourceRef="StartEvent_1" targetRef="C8DemoExecuteCallActivitySimpleCallActivity" />
+    <bpmn:callActivity id="C8DemoExecuteCallActivitySimpleCallActivity" name="Call subprocess">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="C8DemoExecuteCallActivitySimpleSubprocess" propagateAllChildVariables="false" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ily2ms</bpmn:incoming>
+      <bpmn:outgoing>Flow_1oxtyq5</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_05regfx">
+      <bpmn:incoming>Flow_1oxtyq5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1oxtyq5" sourceRef="C8DemoExecuteCallActivitySimpleCallActivity" targetRef="Event_05regfx" />
+    <bpmn:boundaryEvent id="CalculateEscalationEvent" cancelActivity="false" attachedToRef="C8DemoExecuteCallActivitySimpleCallActivity">
+      <bpmn:outgoing>Flow_1otced4</bpmn:outgoing>
+      <bpmn:escalationEventDefinition id="EscalationEventDefinition_03g5xvh" escalationRef="Escalation_3gu6drg" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_1otced4" sourceRef="CalculateEscalationEvent" targetRef="Activity_1rdvh11" />
+    <bpmn:userTask id="Activity_1rdvh11" name="Calculate in main process">
+      <bpmn:incoming>Flow_1otced4</bpmn:incoming>
+      <bpmn:outgoing>Flow_13e1mi0</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_02i4x7l">
+      <bpmn:incoming>Flow_13e1mi0</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_13e1mi0" sourceRef="Activity_1rdvh11" targetRef="Event_02i4x7l" />
+  </bpmn:process>
+  <bpmn:message id="Message_18i810k" name="Message_18i810k" />
+  <bpmn:escalation id="Escalation_3gu6drg" name="CalculateEscalation" escalationCode="CalculateEscalation" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="C8DemoExecuteCallActivitySimple">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="79" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1q4k7ux_di" bpmnElement="C8DemoExecuteCallActivitySimpleCallActivity">
+        <dc:Bounds x="270" y="57" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_05regfx_di" bpmnElement="Event_05regfx">
+        <dc:Bounds x="432" y="79" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0dq07d8_di" bpmnElement="Activity_1rdvh11">
+        <dc:Bounds x="410" y="180" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_02i4x7l_di" bpmnElement="Event_02i4x7l">
+        <dc:Bounds x="562" y="202" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1hedmio_di" bpmnElement="CalculateEscalationEvent">
+        <dc:Bounds x="322" y="119" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1ily2ms_di" bpmnElement="Flow_1ily2ms">
+        <di:waypoint x="215" y="97" />
+        <di:waypoint x="270" y="97" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1oxtyq5_di" bpmnElement="Flow_1oxtyq5">
+        <di:waypoint x="370" y="97" />
+        <di:waypoint x="432" y="97" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1otced4_di" bpmnElement="Flow_1otced4">
+        <di:waypoint x="340" y="155" />
+        <di:waypoint x="340" y="220" />
+        <di:waypoint x="410" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13e1mi0_di" bpmnElement="Flow_13e1mi0">
+        <di:waypoint x="510" y="220" />
+        <di:waypoint x="562" y="220" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

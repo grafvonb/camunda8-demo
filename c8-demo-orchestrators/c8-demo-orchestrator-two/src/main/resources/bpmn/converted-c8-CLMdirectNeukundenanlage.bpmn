@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:conversion="http://camunda.org/schema/conversion/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0daix0m" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.22.0" conversion:converterVersion="0.8.9-SNAPSHOT" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.4.0">
+  <bpmn:process id="CLMdirectNeukundenanlageProzess" name="CLM.direct Neukundenanlage" processType="None" isClosed="false" isExecutable="true">
+    <bpmn:extensionElements>
+      <conversion:message severity="INFO">Unused attribute 'historyTimeToLive' on 'process' is removed.</conversion:message>
+    </bpmn:extensionElements>
+    <bpmn:sequenceFlow id="Flow_1v0oedg" sourceRef="NeukundenanlageStartEvent" targetRef="LogTask1" />
+    <bpmn:sequenceFlow id="Flow_06pwuhr" sourceRef="LogTask1" targetRef="NeuenKundenAnlegenTask" />
+    <bpmn:sequenceFlow id="Flow_0f59zew" sourceRef="LogTask2" targetRef="KundeAngelegtEndSignal" />
+    <bpmn:sequenceFlow id="Flow_04eh7cj" sourceRef="NeuenKundenAnlegenTask" targetRef="LogTask2" />
+    <bpmn:userTask id="NeuenKundenAnlegenTask" name="Kunden anlegen" implementation="##unspecified">
+      <bpmn:extensionElements>
+        <conversion:message severity="REVIEW">Element 'inputParameter' was transformed. Parameter 'kundenId': Please review transformed expression: '&lt;kundenId&gt;' -&gt; '&lt;kundenId&gt;'.</conversion:message>
+        <conversion:message severity="REVIEW">Element 'outputParameter' was transformed. Parameter 'kundenId': Please review transformed expression: '${kundenId}' -&gt; '=kundenId'.</conversion:message>
+        <zeebe:ioMapping>
+          <zeebe:input source="&#60;kundenId&#62;" target="kundenId" />
+          <zeebe:output source="=kundenId" target="kundenId" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_06pwuhr</bpmn:incoming>
+      <bpmn:outgoing>Flow_04eh7cj</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sendTask id="LogTask1" name="Log&#10;&#34;Kunde wird angelegt&#34;" implementation="##WebService">
+      <bpmn:extensionElements>
+        <conversion:message severity="REVIEW">Attribute 'delegateExpression' on 'sendTask' was mapped. Delegate call to '${logMessageHandler}' was transformed to job type 'camunda-7-adapter'. Please review your implementation.</conversion:message>
+        <conversion:message severity="REVIEW">Element 'inputParameter' was transformed. Parameter 'message': Please review transformed expression: 'Kunde wird angelegt' -&gt; 'Kunde wird angelegt'.</conversion:message>
+        <zeebe:ioMapping>
+          <zeebe:input source="Kunde wird angelegt" target="logMessage" />
+        </zeebe:ioMapping>
+        <zeebe:taskDefinition type="logMessageWorker" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1v0oedg</bpmn:incoming>
+      <bpmn:outgoing>Flow_06pwuhr</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:sendTask id="LogTask2" name="Log&#10;&#34;Kunde wurde angelegt&#34;" implementation="##WebService">
+      <bpmn:extensionElements>
+        <conversion:message severity="REVIEW">Attribute 'delegateExpression' on 'sendTask' was mapped. Delegate call to '${logMessageHandler}' was transformed to job type 'camunda-7-adapter'. Please review your implementation.</conversion:message>
+        <conversion:message severity="REVIEW">Element 'inputParameter' was transformed. Parameter 'message': Please review transformed expression: 'Kunde wurde angelegt mit Id: ${kundenId}' -&gt; '="Kunde wurde angelegt mit Id:" + kundenId'.</conversion:message>
+        <conversion:message severity="INFO">Unused attribute 'asyncBefore' on 'sendTask' is removed.</conversion:message>
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;Kunde wurde angelegt mit Id:&#34; + kundenId" target="logMessage" />
+        </zeebe:ioMapping>
+        <zeebe:taskDefinition type="logMessageWorker" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_04eh7cj</bpmn:incoming>
+      <bpmn:outgoing>Flow_0f59zew</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:endEvent id="KundeAngelegtEndSignal" name="Kunde angelegt">
+      <bpmn:extensionElements>
+        <conversion:reference>Signal_2g0hjsv</conversion:reference>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0f59zew</bpmn:incoming>
+      <bpmn:signalEventDefinition id="SignalEventDefinition_1rneou1" signalRef="Signal_2g0hjsv" />
+    </bpmn:endEvent>
+    <bpmn:startEvent id="NeukundenanlageStartEvent">
+      <bpmn:outgoing>Flow_1v0oedg</bpmn:outgoing>
+    </bpmn:startEvent>
+  </bpmn:process>
+  <bpmn:message id="Message_1rbs50d" name="KundeAngelegtMessage">
+    <bpmn:extensionElements>
+      <conversion:message severity="TASK">Please define a correlation key.</conversion:message>
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:signal id="Signal_2g0hjsv" name="=&#34;KundeAngelegtSignal-&#34; + processBusinessKey">
+    <bpmn:extensionElements>
+      <conversion:referencedBy>KundeAngelegtEndSignal</conversion:referencedBy>
+    </bpmn:extensionElements>
+  </bpmn:signal>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CLMdirectNeukundenanlageProzess">
+      <bpmndi:BPMNShape id="Activity_1ixnsvl_di" bpmnElement="NeuenKundenAnlegenTask">
+        <dc:Bounds x="430" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0t8o4ay_di" bpmnElement="LogTask1">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15enekr_di" bpmnElement="LogTask2">
+        <dc:Bounds x="590" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1dlj153_di" bpmnElement="KundeAngelegtEndSignal">
+        <dc:Bounds x="752" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="732" y="142" width="78" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1n7hyj7_di" bpmnElement="NeukundenanlageStartEvent">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1v0oedg_di" bpmnElement="Flow_1v0oedg">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06pwuhr_di" bpmnElement="Flow_06pwuhr">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="430" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0f59zew_di" bpmnElement="Flow_0f59zew">
+        <di:waypoint x="690" y="117" />
+        <di:waypoint x="752" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04eh7cj_di" bpmnElement="Flow_04eh7cj">
+        <di:waypoint x="530" y="117" />
+        <di:waypoint x="590" y="117" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

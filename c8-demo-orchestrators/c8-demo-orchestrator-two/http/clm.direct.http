@@ -1,0 +1,39 @@
+###
+POST http://localhost:8100/process/start
+Content-Type: application/json
+
+{
+  "kundenPayload": {
+    "kundenName": "Kunde3"
+  },
+  "kontoPayloads": [
+    {
+      "kontoName": "konto1"
+    },
+    {
+      "kontoName": "konto2"
+    }
+  ],
+  "uvzPayloads": [
+    {
+      "uvzName": "uvz1",
+      "kontoName": "konto1"
+    },
+    {
+      "uvzName": "uvz2",
+      "kontoName": "konto2"
+    },
+    {
+      "uvzName": "uvz2",
+      "kontoName": "konto2"
+    },
+    {
+      "uvzName": "uvz3",
+      "kontoName": "konto2"
+    }
+  ],
+  "runtimeConfig": {
+    "bpmnProcessId": "CLMdirectHauptauftrag",
+    "debugSkipCLMK": true
+  }
+}

@@ -1,6 +1,6 @@
 package com.boczek.c8demo.orchestrator.one;
 
-public interface OrchestrationOneConstants {
+public interface OrchestratorOneConstants {
 
     int MAX_NUM_OF_CREATED_ENTITIES = 5;
 

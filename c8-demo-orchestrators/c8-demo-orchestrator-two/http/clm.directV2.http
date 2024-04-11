@@ -1,0 +1,67 @@
+### start process instance
+POST http://localhost:8100/process/start
+Content-Type: application/json
+
+{
+  "runtimeConfig": {
+    "bpmnProcessId": "CLMdirectHauptauftragV2",
+    "debugSkipCLMK": true
+  }
+}
+
+### add neukundenanlage
+@bpmnProcessId = CLMdirectHauptauftragV2
+@processBusinessKey = a477dfcc-4bfc-4721-9a23-3dae5bb71cbc
+@processInstanceKey = 2251799815949619
+
+POST http://localhost:8100/process/neukundenanlage
+Content-Type: application/json
+
+{
+  "kundenName": "Kunde1",
+  "messageRuntimeConfig": {
+    "messageCorrelationKey": "{{processBusinessKey}}"
+  }
+}
+
+
+### add kontoanlage
+POST http://localhost:8100/process/kontoanlage
+Content-Type: application/json
+
+{
+  "kontoName": "Konto2",
+  "messageRuntimeConfig": {
+    "messageCorrelationKey": "{{processBusinessKey}}"
+  }
+}
+
+
+### add uvzanlage
+POST http://localhost:8100/process/uvzanlage
+Content-Type: application/json
+
+{
+  "uvzName": "Uvz2",
+  "kontoName": "Konto2",
+  "messageRuntimeConfig": {
+    "messageCorrelationKey": "{{processBusinessKey}}"
+  }
+}
+
+### get process instance
+GET http://localhost:8100/process/{{processInstanceKey}}
+
+### get process instances
+GET http://localhost:8100/process/search?
+    bpmnProcessId={{bpmnProcessId}}
+
+### finish process instance
+POST http://localhost:8100/process/ausgefuert
+Content-Type: application/json
+
+{
+  "messageRuntimeConfig": {
+    "messageCorrelationKey": "{{processBusinessKey}}"
+  }
+}

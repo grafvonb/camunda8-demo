@@ -1,6 +1,6 @@
 package com.boczek.c8demo.orchestrator.one.services;
 
-import com.boczek.c8demo.orchestrator.one.OrchestrationOneConstants;
+import com.boczek.c8demo.orchestrator.one.OrchestratorOneConstants;
 import com.boczek.c8demo.orchestrator.one.model.OneEntity;
 import com.boczek.c8demo.orchestrator.one.model.TwoEntity;
 import org.slf4j.Logger;
@@ -64,7 +64,7 @@ public class OrchestratorOneService {
 
     public Flux<TwoEntity> createRandomNumberOfTwoEntitiesForOneEntityId(String correlationId, String bodyTwo, UUID oneEntityId, boolean tryUnstable) {
         String prefix = tryUnstable ? "Will try to" : "Will";
-        int numOfEntitiesToCreate = (new Random()).nextInt(OrchestrationOneConstants.MAX_NUM_OF_CREATED_ENTITIES) + 1;
+        int numOfEntitiesToCreate = (new Random()).nextInt(OrchestratorOneConstants.MAX_NUM_OF_CREATED_ENTITIES) + 1;
         logger.debug("{} create {} of TwoEntity instances for oneEntityId: {}", prefix, numOfEntitiesToCreate, oneEntityId);
 
         return Flux.range(1, numOfEntitiesToCreate)

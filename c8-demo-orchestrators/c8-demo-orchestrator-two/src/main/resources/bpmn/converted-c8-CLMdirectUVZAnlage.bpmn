@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:conversion="http://camunda.org/schema/conversion/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0daix0m" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.22.0" conversion:converterVersion="0.8.9-SNAPSHOT" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.4.0">
+  <bpmn:process id="CLMdirectUVZAnlageProzess" name="CLM.direct UVZAnlage" processType="None" isClosed="false" isExecutable="true">
+    <bpmn:extensionElements>
+      <conversion:message severity="INFO">Unused attribute 'historyTimeToLive' on 'process' is removed.</conversion:message>
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="NeukundenanlageStartEvent">
+      <bpmn:outgoing>Flow_1v0oedg</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1v0oedg" sourceRef="NeukundenanlageStartEvent" targetRef="LogTask1" />
+    <bpmn:sequenceFlow id="Flow_06pwuhr" sourceRef="LogTask1" targetRef="WartenAufKontoAnlageCatchSignal" />
+    <bpmn:sequenceFlow id="Flow_0f59zew" sourceRef="LogTask2" targetRef="NeukundenanlageEndEvent" />
+    <bpmn:sequenceFlow id="Flow_04eh7cj" sourceRef="NeuesUVZAnlegenTask" targetRef="LogTask2" />
+    <bpmn:userTask id="NeuesUVZAnlegenTask" name="Neues UVZ anlegen" implementation="##unspecified">
+      <bpmn:extensionElements>
+        <conversion:message severity="REVIEW">Element 'inputParameter' was transformed. Parameter 'uvzId': Please review transformed expression: '&lt;uvzId&gt;' -&gt; '&lt;uvzId&gt;'.</conversion:message>
+        <conversion:message severity="REVIEW">Element 'outputParameter' was transformed. Parameter 'uvzId': Please review transformed expression: '${uvzId}' -&gt; '=uvzId'.</conversion:message>
+        <zeebe:ioMapping>
+          <zeebe:input source="&#60;uvzId&#62;" target="uvzId" />
+          <zeebe:output source="=uvzId" target="uvzId" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0a95559</bpmn:incoming>
+      <bpmn:outgoing>Flow_04eh7cj</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sendTask id="LogTask1" name="Log&#10;&#34;UVZ wird angelegt&#34;" implementation="##WebService">
+      <bpmn:extensionElements>
+        <conversion:message severity="REVIEW">Attribute 'delegateExpression' on 'sendTask' was mapped. Delegate call to '${logMessageHandler}' was transformed to job type 'camunda-7-adapter'. Please review your implementation.</conversion:message>
+        <conversion:message severity="REVIEW">Element 'inputParameter' was transformed. Parameter 'message': Please review transformed expression: 'UVZ wird angelegt' -&gt; 'UVZ wird angelegt'.</conversion:message>
+        <zeebe:ioMapping>
+          <zeebe:input source="UVZ wird angelegt" target="logMessage" />
+        </zeebe:ioMapping>
+        <zeebe:taskDefinition type="logMessageWorker" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1v0oedg</bpmn:incoming>
+      <bpmn:outgoing>Flow_06pwuhr</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:sendTask id="LogTask2" name="Log&#10;&#34;Konto wurde angelegt&#34;" implementation="##WebService">
+      <bpmn:extensionElements>
+        <conversion:message severity="REVIEW">Attribute 'delegateExpression' on 'sendTask' was mapped. Delegate call to '${logMessageHandler}' was transformed to job type 'camunda-7-adapter'. Please review your implementation.</conversion:message>
+        <conversion:message severity="REVIEW">Element 'inputParameter' was transformed. Parameter 'message': Please review transformed expression: 'UVZ wurde angelegt mit Id: ${uvzId}' -&gt; '="UVZ wurde angelegt mit Id:" + uvzId'.</conversion:message>
+        <conversion:message severity="INFO">Unused attribute 'asyncBefore' on 'sendTask' is removed.</conversion:message>
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;UVZ wurde angelegt mit Id:&#34; + uvzId" target="logMessage" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="delegateExpression" value="${logMessageHandler}" />
+        </zeebe:taskHeaders>
+        <zeebe:taskDefinition type="logMessageWorker" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_04eh7cj</bpmn:incoming>
+      <bpmn:outgoing>Flow_0f59zew</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:sequenceFlow id="Flow_0a95559" sourceRef="WartenAufKontoAnlageCatchSignal" targetRef="NeuesUVZAnlegenTask" />
+    <bpmn:intermediateCatchEvent id="WartenAufKontoAnlageCatchSignal" name="Warten&#10;auf Konto-Anlage">
+      <bpmn:extensionElements>
+        <conversion:reference>Signal_0ntthap</conversion:reference>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_06pwuhr</bpmn:incoming>
+      <bpmn:outgoing>Flow_0a95559</bpmn:outgoing>
+      <bpmn:signalEventDefinition id="SignalEventDefinition_1urt415" signalRef="Signal_0ntthap" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="NeukundenanlageEndEvent">
+      <bpmn:incoming>Flow_0f59zew</bpmn:incoming>
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmn:message id="Message_28nt7os" name="KundeAngelegtMessage">
+    <bpmn:extensionElements>
+      <conversion:message severity="TASK">Please define a correlation key.</conversion:message>
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:signal id="Signal_0ntthap" name="=&#34;KontoAngelegtSignal-&#34; + processBusinessKey + uvzPayload.kontoName">
+    <bpmn:extensionElements>
+      <conversion:referencedBy>WartenAufKontoAnlageCatchSignal</conversion:referencedBy>
+    </bpmn:extensionElements>
+  </bpmn:signal>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CLMdirectUVZAnlageProzess">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="NeukundenanlageStartEvent">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="193" y="142" width="8" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ixnsvl_di" bpmnElement="NeuesUVZAnlegenTask">
+        <dc:Bounds x="480" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0t8o4ay_di" bpmnElement="LogTask1">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15enekr_di" bpmnElement="LogTask2">
+        <dc:Bounds x="640" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_143ap54_di" bpmnElement="WartenAufKontoAnlageCatchSignal">
+        <dc:Bounds x="402" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="386" y="142" width="86" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1aylrkz_di" bpmnElement="NeukundenanlageEndEvent">
+        <dc:Bounds x="802" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1v0oedg_di" bpmnElement="Flow_1v0oedg">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06pwuhr_di" bpmnElement="Flow_06pwuhr">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="402" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0f59zew_di" bpmnElement="Flow_0f59zew">
+        <di:waypoint x="740" y="117" />
+        <di:waypoint x="802" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04eh7cj_di" bpmnElement="Flow_04eh7cj">
+        <di:waypoint x="580" y="117" />
+        <di:waypoint x="640" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0a95559_di" bpmnElement="Flow_0a95559">
+        <di:waypoint x="438" y="117" />
+        <di:waypoint x="480" y="117" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:conversion="http://camunda.org/schema/conversion/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_06ngojo" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.22.0" conversion:converterVersion="0.8.9-SNAPSHOT" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.4.0">
+  <bpmn:process id="CLMdirectHauptauftrag" name="CLM.direct Hauptauftrag" processType="None" isClosed="false" isExecutable="true">
+    <bpmn:extensionElements>
+      <conversion:message severity="INFO">Unused attribute 'historyTimeToLive' on 'process' is removed.</conversion:message>
+    </bpmn:extensionElements>
+    <bpmn:subProcess id="HauptauftragProcess" name="Hauptauftrag">
+      <bpmn:incoming>Flow_13zs4zj</bpmn:incoming>
+      <bpmn:outgoing>Flow_1cyayzv</bpmn:outgoing>
+      <bpmn:callActivity id="Neukundenanlageprozess" name="Neukunden-anlage ausführen" calledElement="CLMdirectNeukundenanlageProzess">
+        <bpmn:extensionElements>
+          <conversion:message severity="WARNING">Element 'in' cannot be transformed. businessKey has to be a process variable in Zeebe.</conversion:message>
+          <conversion:message severity="REVIEW">Attribute 'calledElement' on 'callActivity' was mapped. Please review transformed expression: 'CLMdirectNeukundenanlageProzess' -&gt; 'CLMdirectNeukundenanlageProzess'.</conversion:message>
+          <conversion:message severity="REVIEW">Element 'in' was transformed. Parameter 'payload': Please review transformed expression: 'payload' -&gt; '=payload'.</conversion:message>
+          <conversion:message severity="REVIEW">Element 'in' was transformed. Parameter 'kundenName': Please review transformed expression: '${payload.kundenPayload.kundenName}' -&gt; '=payload.kundenPayload.kundenName'.</conversion:message>
+          <zeebe:calledElement processId="CLMdirectNeukundenanlageProzess" propagateAllChildVariables="false" propagateAllParentVariables="false" />
+          <zeebe:ioMapping>
+            <zeebe:input source="=payload.kundenPayload.kundenName" target="kundenName" />
+            <zeebe:input source="=payload" target="payload" />
+            <zeebe:input source="=processBusinessKey" target="processBusinessKey" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_01pb640</bpmn:incoming>
+        <bpmn:outgoing>Flow_0jbjar3</bpmn:outgoing>
+      </bpmn:callActivity>
+      <bpmn:callActivity id="Kontoanlageprozess" name="Kontoanlage ausführen" calledElement="CLMdirectKontoanlageProzess">
+        <bpmn:extensionElements>
+          <conversion:message severity="WARNING">Element 'in' cannot be transformed. businessKey has to be a process variable in Zeebe.</conversion:message>
+          <conversion:message severity="TASK">Collecting results in a multi instance is now natively possible with Zeebe. Please review.</conversion:message>
+          <conversion:message severity="REVIEW">Attribute 'calledElement' on 'callActivity' was mapped. Please review transformed expression: 'CLMdirectKontoanlageProzess' -&gt; 'CLMdirectKontoanlageProzess'.</conversion:message>
+          <conversion:message severity="REVIEW">Element 'in' was transformed. Parameter 'kontoPayload': Please review transformed expression: 'kontoPayload' -&gt; '=kontoPayload'.</conversion:message>
+          <conversion:message severity="REVIEW">Element 'in' was transformed. Parameter 'kontoName': Please review transformed expression: '${kontoPayload.kontoName}' -&gt; '=kontoPayload.kontoName'.</conversion:message>
+          <conversion:message severity="REVIEW">Element 'in' was transformed. Parameter 'debugSkipCLMK': Please review transformed expression: '${debugSkipCLMK}' -&gt; '=debugSkipCLMK'.</conversion:message>
+          <conversion:message severity="REVIEW">Attribute 'collection' on 'multiInstanceLoopCharacteristics' was mapped. Please review transformed expression: '${payload.kontoPayloads}' -&gt; '=payload.kontoPayloads'.</conversion:message>
+          <conversion:message severity="INFO">Attribute 'elementVariable' on 'multiInstanceLoopCharacteristics' was mapped. Is set to Zeebe input element.</conversion:message>
+          <zeebe:calledElement processId="CLMdirectKontoanlageProzess" propagateAllChildVariables="false" propagateAllParentVariables="false" />
+          <zeebe:ioMapping>
+            <zeebe:input source="=kontoPayload.kontoName" target="kontoName" />
+            <zeebe:input source="=debugSkipCLMK" target="debugSkipCLMK" />
+            <zeebe:input source="=kontoPayload" target="kontoPayload" />
+            <zeebe:input source="=processBusinessKey" target="processBusinessKey" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0h05myh</bpmn:incoming>
+        <bpmn:outgoing>Flow_0j5oumh</bpmn:outgoing>
+        <bpmn:multiInstanceLoopCharacteristics>
+          <bpmn:documentation />
+          <bpmn:extensionElements>
+            <zeebe:loopCharacteristics inputCollection="=payload.kontoPayloads" inputElement="kontoPayload" />
+          </bpmn:extensionElements>
+        </bpmn:multiInstanceLoopCharacteristics>
+      </bpmn:callActivity>
+      <bpmn:startEvent id="HauptauftragStartEvent" name="Hauptauftrag ausführen">
+        <bpmn:outgoing>Flow_0igo072</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:endEvent id="HauptauftragEndEvent" name="Hauptauftrag ausgeführt">
+        <bpmn:incoming>Flow_1f8qxzj</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:subProcess id="ExtraKontoanlage" triggeredByEvent="true">
+        <bpmn:callActivity id="ExtraKontoanlageprozess" name="Extra Kontoanlage ausführen" calledElement="CLMdirectKontoanlageProzess">
+          <bpmn:extensionElements>
+            <conversion:message severity="WARNING">Element 'in' cannot be transformed. businessKey has to be a process variable in Zeebe.</conversion:message>
+            <conversion:message severity="REVIEW">Attribute 'calledElement' on 'callActivity' was mapped. Please review transformed expression: 'CLMdirectKontoanlageProzess' -&gt; 'CLMdirectKontoanlageProzess'.</conversion:message>
+            <conversion:message severity="REVIEW">Element 'in' was transformed. Parameter 'kontoName': Please review transformed expression: 'kontoName' -&gt; '=kontoName'.</conversion:message>
+            <conversion:message severity="REVIEW">Element 'in' was transformed. Parameter 'kontoPayload': Please review transformed expression: 'kontoPayload' -&gt; '=kontoPayload'.</conversion:message>
+            <conversion:message severity="REVIEW">Element 'in' was transformed. Parameter 'debugSkipCLMK': Please review transformed expression: '${debugSkipCLMK}' -&gt; '=debugSkipCLMK'.</conversion:message>
+            <zeebe:calledElement processId="CLMdirectKontoanlageProzess" propagateAllChildVariables="false" propagateAllParentVariables="false" />
+            <zeebe:ioMapping>
+              <zeebe:input source="=kontoName" target="kontoName" />
+              <zeebe:input source="=kontoPayload" target="kontoPayload" />
+              <zeebe:input source="=debugSkipCLMK" target="debugSkipCLMK" />
+              <zeebe:input source="=processBusinessKey" target="processBusinessKey" />
+            </zeebe:ioMapping>
+          </bpmn:extensionElements>
+          <bpmn:incoming>Flow_073peci</bpmn:incoming>
+          <bpmn:outgoing>Flow_19zcnos</bpmn:outgoing>
+        </bpmn:callActivity>
+        <bpmn:endEvent id="Event_0jzmpnl" name="Konto&#10;hinzugefügt">
+          <bpmn:incoming>Flow_19zcnos</bpmn:incoming>
+        </bpmn:endEvent>
+        <bpmn:sequenceFlow id="Flow_19zcnos" sourceRef="ExtraKontoanlageprozess" targetRef="Event_0jzmpnl" />
+        <bpmn:startEvent id="ExtraKontoanlageStartEvent" name="Konto&#10;hinzufügen" isInterrupting="false">
+          <bpmn:extensionElements>
+            <conversion:reference>Message_088jb18</conversion:reference>
+          </bpmn:extensionElements>
+          <bpmn:outgoing>Flow_073peci</bpmn:outgoing>
+          <bpmn:messageEventDefinition id="MessageEventDefinition_0hyczap" messageRef="Message_088jb18" />
+        </bpmn:startEvent>
+        <bpmn:sequenceFlow id="Flow_073peci" sourceRef="ExtraKontoanlageStartEvent" targetRef="ExtraKontoanlageprozess" />
+      </bpmn:subProcess>
+      <bpmn:sequenceFlow id="Flow_0igo072" sourceRef="HauptauftragStartEvent" targetRef="DispatchGateway" />
+      <bpmn:sequenceFlow id="NeukundenanlageFlow" sourceRef="DispatchGateway" targetRef="NeukundenanlageGateway">
+        <bpmn:extensionElements>
+          <conversion:message severity="REVIEW">Condition expression: Please review transformed expression: '${payload.kundenPayload.kundenId==null}' -&gt; '=payload.kundenPayload.kundenId=null'.</conversion:message>
+        </bpmn:extensionElements>
+      </bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="KontoanlageFlow" sourceRef="DispatchGateway" targetRef="KontoanlageGateway">
+        <bpmn:extensionElements>
+          <conversion:message severity="TASK">Condition expression: Transformed expression: '${payload.kontoPayloads.size()&gt;0}' -&gt; '=payload.kontoPayloads.size()&gt;0'. Method invocation is not possible in FEEL.</conversion:message>
+        </bpmn:extensionElements>
+      </bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="Flow_0jbjar3" sourceRef="Neukundenanlageprozess" targetRef="NeukundenanlageGatewayMerge" />
+      <bpmn:sequenceFlow id="Flow_0j5oumh" sourceRef="Kontoanlageprozess" targetRef="KontoanlageGatewayMerge" />
+      <bpmn:sequenceFlow id="Flow_1f8qxzj" sourceRef="DispatchGatewayGateway" targetRef="HauptauftragEndEvent" />
+      <bpmn:sequenceFlow id="Flow_0znjja4" sourceRef="DispatchGateway" targetRef="UVZanlageGateway" />
+      <bpmn:sequenceFlow id="Flow_19yjkbj" sourceRef="UVZAnlageprozess" targetRef="UVZanlageGatewayMerge" />
+      <bpmn:callActivity id="UVZAnlageprozess" name="UVZ-Anlage&#10;ausführen" calledElement="CLMdirectUVZAnlageProzess">
+        <bpmn:extensionElements>
+          <conversion:message severity="WARNING">Element 'in' cannot be transformed. businessKey has to be a process variable in Zeebe.</conversion:message>
+          <conversion:message severity="TASK">Collecting results in a multi instance is now natively possible with Zeebe. Please review.</conversion:message>
+          <conversion:message severity="REVIEW">Attribute 'calledElement' on 'callActivity' was mapped. Please review transformed expression: 'CLMdirectUVZAnlageProzess' -&gt; 'CLMdirectUVZAnlageProzess'.</conversion:message>
+          <conversion:message severity="REVIEW">Element 'in' was transformed. Parameter 'uvzPayload': Please review transformed expression: 'uvzPayload' -&gt; '=uvzPayload'.</conversion:message>
+          <conversion:message severity="REVIEW">Element 'in' was transformed. Parameter 'uvzName': Please review transformed expression: '${uvzPayload.uvzName}' -&gt; '=uvzPayload.uvzName'.</conversion:message>
+          <conversion:message severity="REVIEW">Attribute 'collection' on 'multiInstanceLoopCharacteristics' was mapped. Please review transformed expression: '${payload.uvzPayloads}' -&gt; '=payload.uvzPayloads'.</conversion:message>
+          <conversion:message severity="INFO">Attribute 'elementVariable' on 'multiInstanceLoopCharacteristics' was mapped. Is set to Zeebe input element.</conversion:message>
+          <zeebe:calledElement processId="CLMdirectUVZAnlageProzess" propagateAllChildVariables="false" propagateAllParentVariables="false" />
+          <zeebe:ioMapping>
+            <zeebe:input source="=uvzPayload.uvzName" target="uvzName" />
+            <zeebe:input source="=uvzPayload" target="uvzPayload" />
+            <zeebe:input source="=processBusinessKey" target="processBusinessKey" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0vwrm1w</bpmn:incoming>
+        <bpmn:outgoing>Flow_19yjkbj</bpmn:outgoing>
+        <bpmn:multiInstanceLoopCharacteristics>
+          <bpmn:documentation />
+          <bpmn:extensionElements>
+            <zeebe:loopCharacteristics inputCollection="=payload.uvzPayloads" inputElement="uvzPayload" />
+          </bpmn:extensionElements>
+        </bpmn:multiInstanceLoopCharacteristics>
+      </bpmn:callActivity>
+      <bpmn:exclusiveGateway id="KontoanlageGateway" name="Skip?" default="Flow_123spbe">
+        <bpmn:incoming>KontoanlageFlow</bpmn:incoming>
+        <bpmn:outgoing>Flow_0h05myh</bpmn:outgoing>
+        <bpmn:outgoing>Flow_123spbe</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:sequenceFlow id="Flow_0h05myh" sourceRef="KontoanlageGateway" targetRef="Kontoanlageprozess">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=count(payload.kontoPayloads)&gt;0</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:exclusiveGateway id="NeukundenanlageGateway" default="Flow_0mdqn70">
+        <bpmn:incoming>NeukundenanlageFlow</bpmn:incoming>
+        <bpmn:outgoing>Flow_01pb640</bpmn:outgoing>
+        <bpmn:outgoing>Flow_0mdqn70</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:sequenceFlow id="Flow_01pb640" sourceRef="NeukundenanlageGateway" targetRef="Neukundenanlageprozess">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=payload.kundenPayload.kundenId=null</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:exclusiveGateway id="UVZanlageGateway" default="Flow_1scy8rs">
+        <bpmn:incoming>Flow_0znjja4</bpmn:incoming>
+        <bpmn:outgoing>Flow_0vwrm1w</bpmn:outgoing>
+        <bpmn:outgoing>Flow_1scy8rs</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:sequenceFlow id="Flow_0vwrm1w" sourceRef="UVZanlageGateway" targetRef="UVZAnlageprozess">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=count(payload.uvzPayloads)&gt;0</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:exclusiveGateway id="NeukundenanlageGatewayMerge">
+        <bpmn:incoming>Flow_0jbjar3</bpmn:incoming>
+        <bpmn:incoming>Flow_0mdqn70</bpmn:incoming>
+        <bpmn:outgoing>Flow_1exgne8</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:sequenceFlow id="Flow_1exgne8" sourceRef="NeukundenanlageGatewayMerge" targetRef="DispatchGatewayGateway" />
+      <bpmn:sequenceFlow id="Flow_0mdqn70" sourceRef="NeukundenanlageGateway" targetRef="NeukundenanlageGatewayMerge" />
+      <bpmn:exclusiveGateway id="KontoanlageGatewayMerge">
+        <bpmn:incoming>Flow_0j5oumh</bpmn:incoming>
+        <bpmn:incoming>Flow_123spbe</bpmn:incoming>
+        <bpmn:outgoing>Flow_1uo7b2z</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:sequenceFlow id="Flow_1uo7b2z" sourceRef="KontoanlageGatewayMerge" targetRef="DispatchGatewayGateway" />
+      <bpmn:parallelGateway id="DispatchGatewayGateway">
+        <bpmn:incoming>Flow_1exgne8</bpmn:incoming>
+        <bpmn:incoming>Flow_1uo7b2z</bpmn:incoming>
+        <bpmn:incoming>Flow_14i76oz</bpmn:incoming>
+        <bpmn:outgoing>Flow_1f8qxzj</bpmn:outgoing>
+      </bpmn:parallelGateway>
+      <bpmn:exclusiveGateway id="UVZanlageGatewayMerge">
+        <bpmn:incoming>Flow_19yjkbj</bpmn:incoming>
+        <bpmn:incoming>Flow_1scy8rs</bpmn:incoming>
+        <bpmn:outgoing>Flow_14i76oz</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:sequenceFlow id="Flow_14i76oz" sourceRef="UVZanlageGatewayMerge" targetRef="DispatchGatewayGateway" />
+      <bpmn:sequenceFlow id="Flow_123spbe" sourceRef="KontoanlageGateway" targetRef="KontoanlageGatewayMerge" />
+      <bpmn:sequenceFlow id="Flow_1scy8rs" sourceRef="UVZanlageGateway" targetRef="UVZanlageGatewayMerge" />
+      <bpmn:parallelGateway id="DispatchGateway">
+        <bpmn:incoming>Flow_0igo072</bpmn:incoming>
+        <bpmn:outgoing>NeukundenanlageFlow</bpmn:outgoing>
+        <bpmn:outgoing>KontoanlageFlow</bpmn:outgoing>
+        <bpmn:outgoing>Flow_0znjja4</bpmn:outgoing>
+      </bpmn:parallelGateway>
+    </bpmn:subProcess>
+    <bpmn:startEvent id="Event_1bn7p9p">
+      <bpmn:outgoing>Flow_13zs4zj</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_13zs4zj" sourceRef="Event_1bn7p9p" targetRef="HauptauftragProcess" />
+    <bpmn:endEvent id="Event_11282xu">
+      <bpmn:incoming>Flow_1cyayzv</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1cyayzv" sourceRef="HauptauftragProcess" targetRef="Event_11282xu" />
+  </bpmn:process>
+  <bpmn:message id="Message_088jb18" name="ExtraKontoAnlagenMessage">
+    <bpmn:extensionElements>
+      <conversion:message severity="TASK">Please define a correlation key.</conversion:message>
+      <conversion:referencedBy>ExtraKontoanlageStartEvent</conversion:referencedBy>
+      <zeebe:subscription correlationKey="=processBusinessKey" />
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="Message_35rijvu" name="KundeAngelegtMessage">
+    <bpmn:extensionElements>
+      <conversion:message severity="TASK">Please define a correlation key.</conversion:message>
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:signal id="Signal_3rr5rpk" name="KundeAngelegtSignal-${execution.processBusinessKey}" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CLMdirectHauptauftrag">
+      <bpmndi:BPMNShape id="Activity_0q2hljm_di" bpmnElement="HauptauftragProcess" isExpanded="true">
+        <dc:Bounds x="260" y="80" width="720" height="710" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_097egai_di" bpmnElement="Neukundenanlageprozess">
+        <dc:Bounds x="570" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_10iyibh_di" bpmnElement="Kontoanlageprozess">
+        <dc:Bounds x="570" y="300" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ljiryh_di" bpmnElement="HauptauftragStartEvent">
+        <dc:Bounds x="319" y="322" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="306" y="365" width="64" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ep35go_di" bpmnElement="HauptauftragEndEvent">
+        <dc:Bounds x="882" y="322" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="868" y="365" width="64" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ug4yey_di" bpmnElement="ExtraKontoanlage" isExpanded="true">
+        <dc:Bounds x="455" y="570" width="330" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0u9u2c1_di" bpmnElement="ExtraKontoanlageprozess">
+        <dc:Bounds x="565" y="620" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0jzmpnl_di" bpmnElement="Event_0jzmpnl">
+        <dc:Bounds x="717" y="642" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="708" y="685" width="57" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1gwsfgo_di" bpmnElement="ExtraKontoanlageStartEvent">
+        <dc:Bounds x="477" y="642" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="469" y="685" width="54" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_19zcnos_di" bpmnElement="Flow_19zcnos">
+        <di:waypoint x="665" y="660" />
+        <di:waypoint x="717" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_073peci_di" bpmnElement="Flow_073peci">
+        <di:waypoint x="513" y="660" />
+        <di:waypoint x="565" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_1wjnktk_di" bpmnElement="UVZAnlageprozess">
+        <dc:Bounds x="570" y="440" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0tgub17_di" bpmnElement="KontoanlageGateway" isMarkerVisible="true">
+        <dc:Bounds x="485" y="315" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="496" y="372" width="28" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1gpmvkk_di" bpmnElement="NeukundenanlageGateway" isMarkerVisible="true">
+        <dc:Bounds x="485" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="478" y="232" width="65" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_04p9n3a_di" bpmnElement="UVZanlageGateway" isMarkerVisible="true">
+        <dc:Bounds x="485" y="455" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="496" y="512" width="28" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0oqmouq_di" bpmnElement="NeukundenanlageGatewayMerge" isMarkerVisible="true">
+        <dc:Bounds x="705" y="175" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_06rmf99_di" bpmnElement="KontoanlageGatewayMerge" isMarkerVisible="true">
+        <dc:Bounds x="705" y="315" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_00p9a94_di" bpmnElement="DispatchGatewayGateway">
+        <dc:Bounds x="785" y="315" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0zfc1e2_di" bpmnElement="UVZanlageGatewayMerge" isMarkerVisible="true">
+        <dc:Bounds x="705" y="455" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_122fat2_di" bpmnElement="DispatchGateway">
+        <dc:Bounds x="405" y="315" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0igo072_di" bpmnElement="Flow_0igo072">
+        <di:waypoint x="355" y="340" />
+        <di:waypoint x="405" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05i8ojl_di" bpmnElement="NeukundenanlageFlow">
+        <di:waypoint x="430" y="315" />
+        <di:waypoint x="430" y="200" />
+        <di:waypoint x="485" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lf14cw_di" bpmnElement="KontoanlageFlow">
+        <di:waypoint x="455" y="340" />
+        <di:waypoint x="485" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jbjar3_di" bpmnElement="Flow_0jbjar3">
+        <di:waypoint x="670" y="200" />
+        <di:waypoint x="705" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0j5oumh_di" bpmnElement="Flow_0j5oumh">
+        <di:waypoint x="670" y="340" />
+        <di:waypoint x="705" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1f8qxzj_di" bpmnElement="Flow_1f8qxzj">
+        <di:waypoint x="835" y="340" />
+        <di:waypoint x="882" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0znjja4_di" bpmnElement="Flow_0znjja4">
+        <di:waypoint x="430" y="365" />
+        <di:waypoint x="430" y="480" />
+        <di:waypoint x="485" y="480" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19yjkbj_di" bpmnElement="Flow_19yjkbj">
+        <di:waypoint x="670" y="480" />
+        <di:waypoint x="705" y="480" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0h05myh_di" bpmnElement="Flow_0h05myh">
+        <di:waypoint x="535" y="340" />
+        <di:waypoint x="570" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01pb640_di" bpmnElement="Flow_01pb640">
+        <di:waypoint x="535" y="200" />
+        <di:waypoint x="570" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vwrm1w_di" bpmnElement="Flow_0vwrm1w">
+        <di:waypoint x="535" y="480" />
+        <di:waypoint x="570" y="480" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1exgne8_di" bpmnElement="Flow_1exgne8">
+        <di:waypoint x="755" y="200" />
+        <di:waypoint x="810" y="200" />
+        <di:waypoint x="810" y="315" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mdqn70_di" bpmnElement="Flow_0mdqn70">
+        <di:waypoint x="510" y="175" />
+        <di:waypoint x="510" y="127" />
+        <di:waypoint x="730" y="127" />
+        <di:waypoint x="730" y="175" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1uo7b2z_di" bpmnElement="Flow_1uo7b2z">
+        <di:waypoint x="755" y="340" />
+        <di:waypoint x="785" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14i76oz_di" bpmnElement="Flow_14i76oz">
+        <di:waypoint x="755" y="480" />
+        <di:waypoint x="810" y="480" />
+        <di:waypoint x="810" y="365" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_123spbe_di" bpmnElement="Flow_123spbe">
+        <di:waypoint x="510" y="315" />
+        <di:waypoint x="510" y="270" />
+        <di:waypoint x="730" y="270" />
+        <di:waypoint x="730" y="315" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1scy8rs_di" bpmnElement="Flow_1scy8rs">
+        <di:waypoint x="510" y="455" />
+        <di:waypoint x="510" y="410" />
+        <di:waypoint x="730" y="410" />
+        <di:waypoint x="730" y="455" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1bn7p9p_di" bpmnElement="Event_1bn7p9p">
+        <dc:Bounds x="152" y="392" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_11282xu_di" bpmnElement="Event_11282xu">
+        <dc:Bounds x="1052" y="392" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_13zs4zj_di" bpmnElement="Flow_13zs4zj">
+        <di:waypoint x="188" y="410" />
+        <di:waypoint x="260" y="410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cyayzv_di" bpmnElement="Flow_1cyayzv">
+        <di:waypoint x="980" y="410" />
+        <di:waypoint x="1052" y="410" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

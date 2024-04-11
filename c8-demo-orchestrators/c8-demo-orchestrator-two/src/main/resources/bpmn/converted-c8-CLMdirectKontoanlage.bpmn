@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:conversion="http://camunda.org/schema/conversion/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0daix0m" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.22.0" conversion:converterVersion="0.8.9-SNAPSHOT" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.4.0">
+  <bpmn:process id="CLMdirectKontoanlageProzess" name="CLM.direct Kontoanlage" processType="None" isClosed="false" isExecutable="true">
+    <bpmn:extensionElements>
+      <conversion:message severity="INFO">Unused attribute 'historyTimeToLive' on 'process' is removed.</conversion:message>
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="NeukundenanlageStartEvent">
+      <bpmn:outgoing>Flow_1v0oedg</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1v0oedg" sourceRef="NeukundenanlageStartEvent" targetRef="LogTask1" />
+    <bpmn:sequenceFlow id="Flow_06pwuhr" sourceRef="LogTask1" targetRef="KundeAngelegtCatchSignal" />
+    <bpmn:sequenceFlow id="Flow_0f59zew" sourceRef="LogTask2" targetRef="KontoAngelegtEndEvent" />
+    <bpmn:sequenceFlow id="Flow_04eh7cj" sourceRef="NeuesKontoAnlegenTask" targetRef="LogTask2" />
+    <bpmn:userTask id="NeuesKontoAnlegenTask" name="Neues Konto anlegen" implementation="##unspecified">
+      <bpmn:extensionElements>
+        <conversion:message severity="REVIEW">Element 'inputParameter' was transformed. Parameter 'kontoId': Please review transformed expression: '&lt;kontoId&gt;' -&gt; '&lt;kontoId&gt;'.</conversion:message>
+        <conversion:message severity="REVIEW">Element 'outputParameter' was transformed. Parameter 'kontoId': Please review transformed expression: '${kontoId}' -&gt; '=kontoId'.</conversion:message>
+        <zeebe:ioMapping>
+          <zeebe:input source="&#60;kontoId&#62;" target="kontoId" />
+          <zeebe:output source="=kontoId" target="kontoId" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_16tn9ju</bpmn:incoming>
+      <bpmn:incoming>Flow_15wswow</bpmn:incoming>
+      <bpmn:outgoing>Flow_04eh7cj</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sendTask id="LogTask1" name="Log&#10;&#34;Konto wird angelegt&#34;" implementation="##WebService">
+      <bpmn:extensionElements>
+        <conversion:message severity="REVIEW">Attribute 'delegateExpression' on 'sendTask' was mapped. Delegate call to '${logMessageHandler}' was transformed to job type 'camunda-7-adapter'. Please review your implementation.</conversion:message>
+        <conversion:message severity="REVIEW">Element 'inputParameter' was transformed. Parameter 'message': Please review transformed expression: 'Konto wird angelegt' -&gt; 'Konto wird angelegt'.</conversion:message>
+        <zeebe:ioMapping>
+          <zeebe:input source="Konto wird angelegt" target="logMessage" />
+        </zeebe:ioMapping>
+        <zeebe:taskDefinition type="logMessageWorker" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1v0oedg</bpmn:incoming>
+      <bpmn:incoming>Flow_1vp0gry</bpmn:incoming>
+      <bpmn:outgoing>Flow_06pwuhr</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:sendTask id="LogTask2" name="Log&#10;&#34;Konto wurde angelegt&#34;" implementation="##WebService">
+      <bpmn:extensionElements>
+        <conversion:message severity="REVIEW">Attribute 'delegateExpression' on 'sendTask' was mapped. Delegate call to '${logMessageHandler}' was transformed to job type 'camunda-7-adapter'. Please review your implementation.</conversion:message>
+        <conversion:message severity="REVIEW">Element 'inputParameter' was transformed. Parameter 'message': Please review transformed expression: 'Konto wurde angelegt mit Id: ${kontoId}' -&gt; '="Konto wurde angelegt mit Id:" + kontoId'.</conversion:message>
+        <conversion:message severity="INFO">Unused attribute 'asyncBefore' on 'sendTask' is removed.</conversion:message>
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;Konto wurde angelegt mit Id:&#34; + kontoId" target="logMessage" />
+        </zeebe:ioMapping>
+        <zeebe:taskDefinition type="logMessageWorker" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_04eh7cj</bpmn:incoming>
+      <bpmn:outgoing>Flow_0f59zew</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:intermediateCatchEvent id="KundeAngelegtCatchSignal" name="Warten&#10;auf GP-Anlage">
+      <bpmn:extensionElements>
+        <conversion:reference>Signal_0ntthap</conversion:reference>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_06pwuhr</bpmn:incoming>
+      <bpmn:outgoing>Flow_0tlykmg</bpmn:outgoing>
+      <bpmn:signalEventDefinition id="SignalEventDefinition_1urt415" signalRef="Signal_0ntthap" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="KontoAngelegtEndEvent" name="Konto&#10;angelegt">
+      <bpmn:extensionElements>
+        <conversion:reference>Signal_0gsljc0</conversion:reference>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0f59zew</bpmn:incoming>
+      <bpmn:signalEventDefinition id="SignalEventDefinition_0xdpyag" signalRef="Signal_0gsljc0" />
+    </bpmn:endEvent>
+    <bpmn:subProcess id="AuftragsbearbeitungCLMK" name="Auftrags-bearbeitung CLMK">
+      <bpmn:incoming>Flow_0srnx3l</bpmn:incoming>
+      <bpmn:outgoing>Flow_16tn9ju</bpmn:outgoing>
+      <bpmn:startEvent id="BearbeitungGestartetStartEvent" name="Bearbeitung&#10;gestartet">
+        <bpmn:outgoing>Flow_1qajl51</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_1qajl51" sourceRef="BearbeitungGestartetStartEvent" targetRef="Activity_12oh1jm" />
+      <bpmn:exclusiveGateway id="Gateway_0c0zpbl" default="Flow_0sfbanr">
+        <bpmn:incoming>Flow_04rjnrc</bpmn:incoming>
+        <bpmn:outgoing>Flow_10q75ic</bpmn:outgoing>
+        <bpmn:outgoing>Flow_0sfbanr</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:sequenceFlow id="Flow_04rjnrc" sourceRef="Activity_12oh1jm" targetRef="Gateway_0c0zpbl" />
+      <bpmn:sequenceFlow id="Flow_10q75ic" sourceRef="Gateway_0c0zpbl" targetRef="ClmkAufgabeTask">
+        <bpmn:extensionElements>
+          <conversion:message severity="TASK">Condition expression: Transformed expression: '${clmkAufgaben.size()&gt;0}' -&gt; '=clmkAufgaben.size()&gt;0'. Method invocation is not possible in FEEL.</conversion:message>
+        </bpmn:extensionElements>
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=clmkAufgaben.size()&gt;0</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:exclusiveGateway id="Gateway_1002mcq">
+        <bpmn:incoming>Flow_0x7rrtt</bpmn:incoming>
+        <bpmn:incoming>Flow_0sfbanr</bpmn:incoming>
+        <bpmn:outgoing>Flow_1k790ky</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:sequenceFlow id="Flow_0x7rrtt" sourceRef="ClmkAufgabeTask" targetRef="Gateway_1002mcq" />
+      <bpmn:sequenceFlow id="Flow_0sfbanr" sourceRef="Gateway_0c0zpbl" targetRef="Gateway_1002mcq" />
+      <bpmn:userTask id="ClmkAufgabeTask" name="${clmkAufgabe}" implementation="##unspecified">
+        <bpmn:extensionElements>
+          <conversion:message severity="TASK">Collecting results in a multi instance is now natively possible with Zeebe. Please review.</conversion:message>
+          <conversion:message severity="REVIEW">Attribute 'collection' on 'multiInstanceLoopCharacteristics' was mapped. Please review transformed expression: '${clmkAufgaben}' -&gt; '=clmkAufgaben'.</conversion:message>
+          <conversion:message severity="INFO">Attribute 'elementVariable' on 'multiInstanceLoopCharacteristics' was mapped. Is set to Zeebe input element.</conversion:message>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_10q75ic</bpmn:incoming>
+        <bpmn:outgoing>Flow_0x7rrtt</bpmn:outgoing>
+        <bpmn:multiInstanceLoopCharacteristics>
+          <bpmn:documentation />
+          <bpmn:extensionElements>
+            <zeebe:loopCharacteristics inputCollection="=clmkAufgaben" inputElement="clmkAufgabe" />
+          </bpmn:extensionElements>
+        </bpmn:multiInstanceLoopCharacteristics>
+      </bpmn:userTask>
+      <bpmn:sequenceFlow id="Flow_1k790ky" sourceRef="Gateway_1002mcq" targetRef="KontoanlageFreigebenTaslk" />
+      <bpmn:endEvent id="BearbeitungAbgeschlossenEndEvent" name="Bearbeitung&#10;abgeschlossen">
+        <bpmn:incoming>Flow_0qe6vex</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_0q8t7bl" sourceRef="KontoanlageFreigebenTaslk" targetRef="BearbeitungOkGateway" />
+      <bpmn:userTask id="KontoanlageFreigebenTaslk" name="Kontoanlage freigeben bzw. weitere Aufgaben definieren" implementation="##unspecified">
+        <bpmn:incoming>Flow_1k790ky</bpmn:incoming>
+        <bpmn:outgoing>Flow_0q8t7bl</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:serviceTask id="Activity_12oh1jm" name="Kontoanlage prüfen ggf. Aufgaben definieren" implementation="##WebService">
+        <bpmn:extensionElements>
+          <conversion:message severity="REVIEW">Attribute 'delegateExpression' on 'serviceTask' was mapped. Delegate call to '${auftragsbearbeitungCLMKHandler}' was transformed to job type 'camunda-7-adapter'. Please review your implementation.</conversion:message>
+          <zeebe:taskHeaders>
+            <zeebe:header key="delegateExpression" value="${auftragsbearbeitungCLMKHandler}" />
+          </zeebe:taskHeaders>
+          <zeebe:taskDefinition type="camunda-7-adapter" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_1qajl51</bpmn:incoming>
+        <bpmn:incoming>Flow_1bze7qe</bpmn:incoming>
+        <bpmn:outgoing>Flow_04rjnrc</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:exclusiveGateway id="BearbeitungOkGateway" name="Weiter Aufgaben&#10;erforderlich?" default="Flow_0qe6vex">
+        <bpmn:incoming>Flow_0q8t7bl</bpmn:incoming>
+        <bpmn:outgoing>Flow_0qe6vex</bpmn:outgoing>
+        <bpmn:outgoing>Flow_1bze7qe</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:sequenceFlow id="Flow_0qe6vex" sourceRef="BearbeitungOkGateway" targetRef="BearbeitungAbgeschlossenEndEvent" />
+      <bpmn:sequenceFlow id="Flow_1bze7qe" name="Ja" sourceRef="BearbeitungOkGateway" targetRef="Activity_12oh1jm">
+        <bpmn:extensionElements>
+          <conversion:message severity="REVIEW">Condition expression: Please review transformed expression: '${false}' -&gt; '=false'.</conversion:message>
+        </bpmn:extensionElements>
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=false</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="Flow_0tlykmg" sourceRef="KundeAngelegtCatchSignal" targetRef="Gateway_0lu0stv" />
+    <bpmn:sequenceFlow id="Flow_16tn9ju" sourceRef="AuftragsbearbeitungCLMK" targetRef="NeuesKontoAnlegenTask" />
+    <bpmn:exclusiveGateway id="Gateway_0lu0stv" default="Flow_15wswow">
+      <bpmn:incoming>Flow_0tlykmg</bpmn:incoming>
+      <bpmn:outgoing>Flow_0srnx3l</bpmn:outgoing>
+      <bpmn:outgoing>Flow_15wswow</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0srnx3l" sourceRef="Gateway_0lu0stv" targetRef="AuftragsbearbeitungCLMK">
+      <bpmn:extensionElements>
+        <conversion:message severity="REVIEW">Condition expression: Please review transformed expression: '${debugSkipCLMK==false}' -&gt; '=debugSkipCLMK=false'.</conversion:message>
+      </bpmn:extensionElements>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=debugSkipCLMK=false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_15wswow" sourceRef="Gateway_0lu0stv" targetRef="NeuesKontoAnlegenTask" />
+    <bpmn:sequenceFlow id="Flow_1vp0gry" sourceRef="Event_092bnnh" targetRef="LogTask1" />
+    <bpmn:startEvent id="Event_092bnnh">
+      <bpmn:outgoing>Flow_1vp0gry</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1yvdoun" messageRef="Message_390ncft" />
+    </bpmn:startEvent>
+  </bpmn:process>
+  <bpmn:message id="Message_28nt7os" name="KundeAngelegtMessage">
+    <bpmn:extensionElements>
+      <conversion:message severity="TASK">Please define a correlation key.</conversion:message>
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:signal id="Signal_0ntthap" name="=&#34;KundeAngelegtSignal-&#34; + processBusinessKey">
+    <bpmn:extensionElements>
+      <conversion:referencedBy>KundeAngelegtCatchSignal</conversion:referencedBy>
+    </bpmn:extensionElements>
+  </bpmn:signal>
+  <bpmn:signal id="Signal_0gsljc0" name="=&#34;KontoAngelegtSignal-&#34; + processBusinessKey + kontoPayload.kontoName">
+    <bpmn:extensionElements>
+      <conversion:referencedBy>KontoAngelegtEndEvent</conversion:referencedBy>
+    </bpmn:extensionElements>
+  </bpmn:signal>
+  <bpmn:message id="Message_390ncft" name="KundeAnlegenMessage" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CLMdirectKontoanlageProzess">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="NeukundenanlageStartEvent">
+        <dc:Bounds x="179" y="149" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="193" y="142" width="8" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ixnsvl_di" bpmnElement="NeuesKontoAnlegenTask">
+        <dc:Bounds x="740" y="127" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0t8o4ay_di" bpmnElement="LogTask1">
+        <dc:Bounds x="270" y="127" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15enekr_di" bpmnElement="LogTask2">
+        <dc:Bounds x="900" y="127" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_143ap54_di" bpmnElement="KundeAngelegtCatchSignal">
+        <dc:Bounds x="412" y="149" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="399" y="192" width="73" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1vdsbo4_di" bpmnElement="KontoAngelegtEndEvent">
+        <dc:Bounds x="1062" y="149" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1059" y="192" width="43" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_08sfhbn_di" bpmnElement="AuftragsbearbeitungCLMK" isExpanded="false">
+        <dc:Bounds x="590" y="127" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0lu0stv_di" bpmnElement="Gateway_0lu0stv" isMarkerVisible="true">
+        <dc:Bounds x="495" y="142" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1o4c079_di" bpmnElement="Event_092bnnh">
+        <dc:Bounds x="179" y="222" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1v0oedg_di" bpmnElement="Flow_1v0oedg">
+        <di:waypoint x="215" y="167" />
+        <di:waypoint x="270" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06pwuhr_di" bpmnElement="Flow_06pwuhr">
+        <di:waypoint x="370" y="167" />
+        <di:waypoint x="412" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0f59zew_di" bpmnElement="Flow_0f59zew">
+        <di:waypoint x="1000" y="167" />
+        <di:waypoint x="1062" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04eh7cj_di" bpmnElement="Flow_04eh7cj">
+        <di:waypoint x="840" y="167" />
+        <di:waypoint x="900" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0tlykmg_di" bpmnElement="Flow_0tlykmg">
+        <di:waypoint x="448" y="167" />
+        <di:waypoint x="495" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16tn9ju_di" bpmnElement="Flow_16tn9ju">
+        <di:waypoint x="690" y="167" />
+        <di:waypoint x="740" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0srnx3l_di" bpmnElement="Flow_0srnx3l">
+        <di:waypoint x="545" y="167" />
+        <di:waypoint x="590" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15wswow_di" bpmnElement="Flow_15wswow">
+        <di:waypoint x="520" y="142" />
+        <di:waypoint x="520" y="80" />
+        <di:waypoint x="790" y="80" />
+        <di:waypoint x="790" y="127" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vp0gry_di" bpmnElement="Flow_1vp0gry">
+        <di:waypoint x="215" y="240" />
+        <di:waypoint x="243" y="240" />
+        <di:waypoint x="243" y="167" />
+        <di:waypoint x="270" y="167" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_0ed6938">
+    <bpmndi:BPMNPlane id="BPMNPlane_0nrskg2" bpmnElement="AuftragsbearbeitungCLMK">
+      <bpmndi:BPMNShape id="Event_05xjcwn_di" bpmnElement="BearbeitungGestartetStartEvent">
+        <dc:Bounds x="180" y="202" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="169" y="245" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0c0zpbl_di" bpmnElement="Gateway_0c0zpbl" isMarkerVisible="true">
+        <dc:Bounds x="423" y="195" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1002mcq_di" bpmnElement="Gateway_1002mcq" isMarkerVisible="true">
+        <dc:Bounds x="603" y="195" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_17zrj0w_di" bpmnElement="ClmkAufgabeTask">
+        <dc:Bounds x="488" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0xszg4v_di" bpmnElement="BearbeitungAbgeschlossenEndEvent">
+        <dc:Bounds x="960" y="202" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="941" y="245" width="74" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1y8vh5r_di" bpmnElement="KontoanlageFreigebenTaslk">
+        <dc:Bounds x="698" y="180" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_01g7wm8_di" bpmnElement="Activity_12oh1jm">
+        <dc:Bounds x="268" y="180" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1dhw6km_di" bpmnElement="BearbeitungOkGateway" isMarkerVisible="true">
+        <dc:Bounds x="853" y="195" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="839" y="165" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1qajl51_di" bpmnElement="Flow_1qajl51">
+        <di:waypoint x="216" y="220" />
+        <di:waypoint x="268" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04rjnrc_di" bpmnElement="Flow_04rjnrc">
+        <di:waypoint x="368" y="220" />
+        <di:waypoint x="423" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10q75ic_di" bpmnElement="Flow_10q75ic">
+        <di:waypoint x="448" y="195" />
+        <di:waypoint x="448" y="120" />
+        <di:waypoint x="488" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0x7rrtt_di" bpmnElement="Flow_0x7rrtt">
+        <di:waypoint x="588" y="120" />
+        <di:waypoint x="628" y="120" />
+        <di:waypoint x="628" y="195" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0sfbanr_di" bpmnElement="Flow_0sfbanr">
+        <di:waypoint x="473" y="220" />
+        <di:waypoint x="603" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1k790ky_di" bpmnElement="Flow_1k790ky">
+        <di:waypoint x="653" y="220" />
+        <di:waypoint x="698" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0q8t7bl_di" bpmnElement="Flow_0q8t7bl">
+        <di:waypoint x="798" y="220" />
+        <di:waypoint x="853" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qe6vex_di" bpmnElement="Flow_0qe6vex">
+        <di:waypoint x="903" y="220" />
+        <di:waypoint x="960" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bze7qe_di" bpmnElement="Flow_1bze7qe">
+        <di:waypoint x="878" y="245" />
+        <di:waypoint x="878" y="310" />
+        <di:waypoint x="318" y="310" />
+        <di:waypoint x="318" y="260" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="592" y="292" width="12" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

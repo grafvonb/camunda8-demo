@@ -4,7 +4,7 @@ import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
-import com.boczek.c8demo.orchestrator.one.OrchestrationOneConstants;
+import com.boczek.c8demo.orchestrator.one.OrchestratorOneConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -24,15 +24,15 @@ public class RunTaskInParallelWorker implements JobHandler {
     public void handle(JobClient client, ActivatedJob job) {
         logger.debug("Sending message to run a user task in parallel...");
 
-        if (job.getVariable(OrchestrationOneConstants.VARIABLE_NAME_BUSINESS_CORRELATION_ID) instanceof String businessCorrelationId) {
+        if (job.getVariable(OrchestratorOneConstants.VARIABLE_NAME_BUSINESS_CORRELATION_ID) instanceof String businessCorrelationId) {
 
             String messageName;
             switch (job.getElementId()) {
                 case "RunTaskInParallelThrowEvent":
-                    messageName = OrchestrationOneConstants.MESSAGE_NAME_RUN_TASK_IN_PARALLEL;
+                    messageName = OrchestratorOneConstants.MESSAGE_NAME_RUN_TASK_IN_PARALLEL;
                     break;
                 case "RunTaskInParallelEndEvent":
-                    messageName = OrchestrationOneConstants.MESSAGE_NAME_RUN_TASK_IN_PARALLEL_COMPLETED;
+                    messageName = OrchestratorOneConstants.MESSAGE_NAME_RUN_TASK_IN_PARALLEL_COMPLETED;
                     break;
                 default:
                     throw new RuntimeException("Unknown message source: " + job.getElementId());
