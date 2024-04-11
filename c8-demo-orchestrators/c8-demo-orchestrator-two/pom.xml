@@ -9,6 +9,6 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>c8-demo-orchestrator-one</artifactId>
+    <artifactId>c8-demo-orchestrator-two</artifactId>
 
 </project>
