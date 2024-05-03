@@ -12,6 +12,7 @@
     <modules>
         <module>c8-demo-orchestrators</module>
         <module>c8-demo-microservices</module>
+        <module>c8-demo-scenarios</module>
     </modules>
 
     <properties>

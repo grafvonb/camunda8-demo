@@ -9,12 +9,8 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>c8-demo-orchestrators</artifactId>
+    <artifactId>c8-demo-scenarios</artifactId>
     <packaging>pom</packaging>
-    <modules>
-        <module>c8-demo-orchestrator-one</module>
-        <module>c8-demo-orchestrator-two</module>
-    </modules>
 
     <properties>
         <spring-zeebe.version>8.5.1</spring-zeebe.version>

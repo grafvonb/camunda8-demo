@@ -44,11 +44,10 @@ public class OrchestratorTwoConfiguration {
     public CamundaOperateClient operateClient() {
 
         SimpleConfig config = new SimpleConfig();
-        config.addProduct(Product.OPERATE, new SimpleCredential("demo", "demo"));
+        config.addProduct(Product.OPERATE, new SimpleCredential("http://localhost:8081", "demo", "demo"));
 
         Authentication sa = SimpleAuthentication.builder()
                 .withSimpleConfig(config)
-                .withSimpleUrl("http://localhost:8081")
                 .build();
 
         return CamundaOperateClient.builder()
