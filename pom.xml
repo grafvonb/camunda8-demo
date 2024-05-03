@@ -13,6 +13,7 @@
         <module>c8-demo-orchestrators</module>
         <module>c8-demo-microservices</module>
         <module>c8-demo-scenarios</module>
+        <module>c8-demo-scenarios/c8-demo-scenarios-group1</module>
     </modules>
 
     <properties>
