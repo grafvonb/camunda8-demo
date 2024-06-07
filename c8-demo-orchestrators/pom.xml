@@ -14,6 +14,7 @@
     <modules>
         <module>c8-demo-orchestrator-one</module>
         <module>c8-demo-orchestrator-two</module>
+        <module>c8-demo-orchestrator-three</module>
     </modules>
 
     <properties>
