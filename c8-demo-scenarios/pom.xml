@@ -12,6 +12,10 @@
     <artifactId>c8-demo-scenarios</artifactId>
     <packaging>pom</packaging>
 
+    <modules>
+        <module>c8-demo-scenarios-group1</module>
+    </modules>
+
     <properties>
         <spring-zeebe.version>8.5.1</spring-zeebe.version>
         <spring-zeebe.version2>8.5.0</spring-zeebe.version2>
