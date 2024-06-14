@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_13wzqzu" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.23.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.5.0">
+  <bpmn:process id="C8DemoCalculator" name="C8 Demo Calculator" isExecutable="true">
+    <bpmn:startEvent id="CalculatorStartEvent" name="Calculate&#10;required">
+      <bpmn:outgoing>Flow_0uosjk2</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0uosjk2" sourceRef="CalculatorStartEvent" targetRef="ProvideDataActivity" />
+    <bpmn:userTask id="ProvideDataActivity" name="Provide Data">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formId="ProvideDataForm" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0uosjk2</bpmn:incoming>
+      <bpmn:outgoing>Flow_05e55ql</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_05e55ql" sourceRef="ProvideDataActivity" targetRef="LogProvidedData" />
+    <bpmn:endEvent id="CalculatorEndEvent" name="Calculated">
+      <bpmn:incoming>Flow_1tkovgl</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1tkovgl" sourceRef="CalculateActivity" targetRef="CalculatorEndEvent" />
+    <bpmn:serviceTask id="CalculateActivity" name="Calculate">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="calculate" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0zejehs</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tkovgl</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0zejehs" sourceRef="LogProvidedData" targetRef="CalculateActivity" />
+    <bpmn:sendTask id="LogProvidedData" name="Log Provided Data">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="logMessageWorker" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;Calculating...&#34;" target="logMessage" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_05e55ql</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zejehs</bpmn:outgoing>
+    </bpmn:sendTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="C8DemoCalculator">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="CalculatorStartEvent">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="176" y="142" width="46" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_095nhnq_di" bpmnElement="ProvideDataActivity">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0kw1vqn_di" bpmnElement="CalculatorEndEvent">
+        <dc:Bounds x="752" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="745" y="142" width="52" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1dceyek_di" bpmnElement="CalculateActivity">
+        <dc:Bounds x="590" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0lz5evk_di" bpmnElement="LogProvidedData">
+        <dc:Bounds x="430" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0uosjk2_di" bpmnElement="Flow_0uosjk2">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05e55ql_di" bpmnElement="Flow_05e55ql">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="430" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tkovgl_di" bpmnElement="Flow_1tkovgl">
+        <di:waypoint x="690" y="117" />
+        <di:waypoint x="752" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zejehs_di" bpmnElement="Flow_0zejehs">
+        <di:waypoint x="530" y="117" />
+        <di:waypoint x="590" y="117" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

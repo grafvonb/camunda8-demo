@@ -1,15 +1,22 @@
+microservice-one:
+  rest:
+    base-url: http://localhost:8101
+microservice-two:
+  rest:
+    base-url: http://localhost:8102
+camunda:
+  client:
+    mode: simple
+zeebe:
+  client:
+    gateway:
+      address: 127.0.0.1:26500
+    worker:
+      stream:
+        enabled: true
 server:
-  port: 8103
+  port: 8100
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5443/postgres
-    username: postgres
-    password: postgres
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: create
-    open-in-view: false
   security:
     user:
       name: admin
@@ -21,5 +28,7 @@ management:
         include: '*'
 logging:
   level:
-    org.hibernate.sql: DEBUG
-    org.hibernate.type: TRACE
+    com.boczek: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%15.15t] %m%n"
+#    console: "%d{yyyy-MM-dd HH:mm:ss} %-5p %c - %m%n"

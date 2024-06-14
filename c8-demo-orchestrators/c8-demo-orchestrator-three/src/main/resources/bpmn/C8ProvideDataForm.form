@@ -1,0 +1,86 @@
+{
+  "components": [
+    {
+      "values": [
+        {
+          "label": "Add",
+          "value": "add"
+        },
+        {
+          "label": "Substruct",
+          "value": "sub"
+        },
+        {
+          "label": "Multiply",
+          "value": "mul"
+        },
+        {
+          "label": "Divide",
+          "value": "div"
+        }
+      ],
+      "label": "Choose calculate operation",
+      "type": "select",
+      "layout": {
+        "row": "Row_0r99scs",
+        "columns": 6
+      },
+      "id": "Field_09jnqpb",
+      "key": "data.operation",
+      "validate": {
+        "required": false
+      }
+    },
+    {
+      "components": [
+        {
+          "label": "Number 1",
+          "type": "number",
+          "layout": {
+            "row": "Row_03sv2qv",
+            "columns": null
+          },
+          "id": "Field_1ogc1x0",
+          "key": "data.number1"
+        },
+        {
+          "label": "Number 2",
+          "type": "number",
+          "layout": {
+            "row": "Row_03sv2qv",
+            "columns": null
+          },
+          "id": "Field_0xh027r",
+          "key": "data.number2"
+        }
+      ],
+      "showOutline": true,
+      "label": "Input numbers",
+      "type": "group",
+      "layout": {
+        "row": "Row_09k7qpo",
+        "columns": 6
+      },
+      "id": "Field_02307d3"
+    },
+    {
+      "action": "reset",
+      "label": "Reset",
+      "type": "button",
+      "layout": {
+        "row": "Row_1usiwu6",
+        "columns": 2
+      },
+      "id": "Field_12y1etm"
+    }
+  ],
+  "type": "default",
+  "id": "ProvideDataForm",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.5.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.23.0"
+  },
+  "schemaVersion": 16
+}
