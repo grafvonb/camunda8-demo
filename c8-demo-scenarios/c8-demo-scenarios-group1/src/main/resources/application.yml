@@ -7,6 +7,15 @@ microservice-two:
 camunda:
   client:
     mode: simple
+#    mode: oidc
+    region: bru-2
+    auth:
+      client-secret: s1~QzHELGy2Lp-gBWCT78GgmksyCgYLAPKnxzCIo49SnT_.Cgf0H68SPkf8d7rtc
+      client-id: 9D.iPo8Hpn8EYCB7B3IYAer-1JG3P_pA
+    cluster-id: 5d5eb742-df55-47f2-be3f-0989908ae15a
+    zeebe:
+      audience: zeebe.camunda.io
+      override-authority: https://login.cloud.camunda.io/oauth/token
 zeebe:
   client:
     gateway:
@@ -29,6 +38,7 @@ management:
 logging:
   level:
     com.boczek: DEBUG
+    io.camunda: ERROR
   pattern:
     console: "%d{HH:mm:ss.SSS} [%15.15t] %m%n"
 #    console: "%d{yyyy-MM-dd HH:mm:ss} %-5p %c - %m%n"
