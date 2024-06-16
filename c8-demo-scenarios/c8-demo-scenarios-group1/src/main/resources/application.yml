@@ -1,0 +1,34 @@
+microservice-one:
+  rest:
+    base-url: http://localhost:8101
+microservice-two:
+  rest:
+    base-url: http://localhost:8102
+camunda:
+  client:
+    mode: simple
+zeebe:
+  client:
+    gateway:
+      address: 127.0.0.1:26500
+    worker:
+      stream:
+        enabled: true
+server:
+  port: 8100
+spring:
+  security:
+    user:
+      name: admin
+      password: admin
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+logging:
+  level:
+    com.boczek: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%15.15t] %m%n"
+#    console: "%d{yyyy-MM-dd HH:mm:ss} %-5p %c - %m%n"
