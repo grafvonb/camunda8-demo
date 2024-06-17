@@ -38,7 +38,7 @@ management:
 logging:
   level:
     com.boczek: DEBUG
-    io.camunda: ERROR
+#    io.camunda: DEBUG
   pattern:
-    console: "%d{HH:mm:ss.SSS} [%15.15t] %m%n"
+#    console: "%d{HH:mm:ss.SSS} [%15.15t] %m%n"
 #    console: "%d{yyyy-MM-dd HH:mm:ss} %-5p %c - %m%n"

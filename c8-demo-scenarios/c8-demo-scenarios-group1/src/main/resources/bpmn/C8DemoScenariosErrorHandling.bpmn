@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1yp23o6" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.23.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.5.0" camunda:diagramRelationId="f3e0e694-8bb4-451d-8ca5-0159745e1779">
+  <bpmn:process id="c8-demo-scenarios-exception-handling" name="C8 Demo Scenarios Exception Handling" isExecutable="true">
+    <bpmn:startEvent id="inputValidatioRequiredStartEvent" name="Input validation&#10;required">
+      <bpmn:outgoing>inputValidatioRequiredStartEvent-validateInputTask</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="inputValidatioRequiredStartEvent-validateInputTask" sourceRef="inputValidatioRequiredStartEvent" targetRef="MergeGateway1" />
+    <bpmn:serviceTask id="validateInputTask" name="Validate input">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="validateInputWorker" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_165oj22</bpmn:incoming>
+      <bpmn:outgoing>validateInputTask-inputAcceptedEndEvent</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="inputAcceptedEndEvent" name="Input&#10;accepted">
+      <bpmn:incoming>validateInputTask-inputAcceptedEndEvent</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="validateInputTask-inputAcceptedEndEvent" sourceRef="validateInputTask" targetRef="inputAcceptedEndEvent" />
+    <bpmn:boundaryEvent id="invalidContentErrorEvent" name="Invalid&#10;content &#10;error" attachedToRef="validateInputTask">
+      <bpmn:outgoing>Flow_00zdqb3</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1hlamdh" errorRef="Error_1jw3sw7" />
+    </bpmn:boundaryEvent>
+    <bpmn:userTask id="reviewInputContentTask" name="Review input&#39;s content">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formId="c8-demo-scenarios-error-handling-review-form" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_00zdqb3</bpmn:incoming>
+      <bpmn:outgoing>Flow_09afd84</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="resolvedGateway" name="Resolved?">
+      <bpmn:incoming>Flow_09afd84</bpmn:incoming>
+      <bpmn:outgoing>resolvedGateway-inputRejectedEndEvent</bpmn:outgoing>
+      <bpmn:outgoing>resolvedGateway-validateInputTask</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="inputRejectedEndEvent" name="Input&#10;rejected">
+      <bpmn:incoming>resolvedGateway-inputRejectedEndEvent</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_00zdqb3" sourceRef="invalidContentErrorEvent" targetRef="reviewInputContentTask" />
+    <bpmn:sequenceFlow id="Flow_09afd84" sourceRef="reviewInputContentTask" targetRef="resolvedGateway" />
+    <bpmn:sequenceFlow id="resolvedGateway-inputRejectedEndEvent" name="No" sourceRef="resolvedGateway" targetRef="inputRejectedEndEvent">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=variables.inputApproved = false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="resolvedGateway-validateInputTask" name="Yes" sourceRef="resolvedGateway" targetRef="MergeGateway1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=variables.inputApproved = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="MergeGateway1">
+      <bpmn:incoming>inputValidatioRequiredStartEvent-validateInputTask</bpmn:incoming>
+      <bpmn:incoming>resolvedGateway-validateInputTask</bpmn:incoming>
+      <bpmn:incoming>Flow_0v7htw9</bpmn:incoming>
+      <bpmn:outgoing>Flow_165oj22</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_165oj22" sourceRef="MergeGateway1" targetRef="validateInputTask" />
+    <bpmn:boundaryEvent id="contentTooLongErrorEvent" name="Content &#10;too long &#10;error" attachedToRef="validateInputTask">
+      <bpmn:outgoing>Flow_10vkuao</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0ws2qu2" errorRef="Error_02kqklt" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_10vkuao" sourceRef="contentTooLongErrorEvent" targetRef="shortenContentTask" />
+    <bpmn:serviceTask id="shortenContentTask" name="Shorten content">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="shortenContentWorker" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_10vkuao</bpmn:incoming>
+      <bpmn:outgoing>Flow_0v7htw9</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0v7htw9" sourceRef="shortenContentTask" targetRef="MergeGateway1" />
+  </bpmn:process>
+  <bpmn:error id="Error_1jw3sw7" name="Invalid Content Error" errorCode="invalidContentError" />
+  <bpmn:error id="Error_02kqklt" name="Content Too Long Error" errorCode="contentTooLongError" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="c8-demo-scenarios-exception-handling">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="inputValidatioRequiredStartEvent">
+        <dc:Bounds x="179" y="249" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="165" y="292" width="74" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_17vryd1_di" bpmnElement="validateInputTask">
+        <dc:Bounds x="380" y="227" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0x6y7pw_di" bpmnElement="inputAcceptedEndEvent">
+        <dc:Bounds x="552" y="249" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="550" y="292" width="45" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_103xb68_di" bpmnElement="reviewInputContentTask">
+        <dc:Bounds x="380" y="380" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0mj6wm5_di" bpmnElement="resolvedGateway" isMarkerVisible="true">
+        <dc:Bounds x="405" y="505" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="404" y="565" width="52" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0c0pph5_di" bpmnElement="inputRejectedEndEvent">
+        <dc:Bounds x="552" y="512" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="551" y="558" width="40" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0fjn4af_di" bpmnElement="MergeGateway1" isMarkerVisible="true">
+        <dc:Bounds x="275" y="242" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1hx10g9_di" bpmnElement="shortenContentTask">
+        <dc:Bounds x="380" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1138qv8_di" bpmnElement="contentTooLongErrorEvent">
+        <dc:Bounds x="412" y="209" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="450" y="180" width="40" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0lncunr_di" bpmnElement="invalidContentErrorEvent">
+        <dc:Bounds x="412" y="289" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="451" y="320" width="37" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0x8ulr1_di" bpmnElement="inputValidatioRequiredStartEvent-validateInputTask">
+        <di:waypoint x="215" y="267" />
+        <di:waypoint x="275" y="267" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1v85f58_di" bpmnElement="validateInputTask-inputAcceptedEndEvent">
+        <di:waypoint x="480" y="267" />
+        <di:waypoint x="552" y="267" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00zdqb3_di" bpmnElement="Flow_00zdqb3">
+        <di:waypoint x="430" y="325" />
+        <di:waypoint x="430" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09afd84_di" bpmnElement="Flow_09afd84">
+        <di:waypoint x="430" y="460" />
+        <di:waypoint x="430" y="505" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1l9ukdb_di" bpmnElement="resolvedGateway-inputRejectedEndEvent">
+        <di:waypoint x="455" y="530" />
+        <di:waypoint x="552" y="530" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="477" y="503" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1b9d043_di" bpmnElement="resolvedGateway-validateInputTask">
+        <di:waypoint x="405" y="530" />
+        <di:waypoint x="300" y="530" />
+        <di:waypoint x="300" y="292" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="350" y="503" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_165oj22_di" bpmnElement="Flow_165oj22">
+        <di:waypoint x="325" y="267" />
+        <di:waypoint x="380" y="267" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10vkuao_di" bpmnElement="Flow_10vkuao">
+        <di:waypoint x="430" y="209" />
+        <di:waypoint x="430" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0v7htw9_di" bpmnElement="Flow_0v7htw9">
+        <di:waypoint x="380" y="120" />
+        <di:waypoint x="300" y="120" />
+        <di:waypoint x="300" y="242" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,5 +1,6 @@
 package com.boczek.c8demo.scenarios.group1.controllers;
 
+import com.boczek.c8demo.scenarios.group1.ProcessInstanceVariables;
 import com.boczek.c8demo.scenarios.group1.controllers.payloads.StartProcessInstancePayload;
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
@@ -29,9 +30,12 @@ public class ScenariosGroup1Controller {
     public Mono<ProcessInstanceEvent> startProcessInstanceReactive(@RequestBody StartProcessInstancePayload payload) {
         logger.debug("Starting process instance {} in a reactive way...", payload.bpmnProcessId());
 
+        var variables = new ProcessInstanceVariables(payload);
+
         var future = client.newCreateInstanceCommand()
                 .bpmnProcessId(payload.bpmnProcessId())
                 .latestVersion()
+                .variables(variables)
                 .send();
 
         return Mono.fromFuture(future::toCompletableFuture)
@@ -44,9 +48,12 @@ public class ScenariosGroup1Controller {
     public ProcessInstanceEvent startProcessInstanceBlocking(@RequestBody StartProcessInstancePayload payload) {
         logger.debug("Starting process instance {} in a blocking way...", payload.bpmnProcessId());
 
+        var variables = new ProcessInstanceVariables(payload);
+
         var result = client.newCreateInstanceCommand()
                 .bpmnProcessId(payload.bpmnProcessId())
                 .latestVersion()
+                .variables(variables)
                 .send()
                 .join();
 
