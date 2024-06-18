@@ -1,6 +1,7 @@
 package com.boczek.c8demo.scenarios.group1.workers;
 
 import com.boczek.c8demo.scenarios.group1.ProcessInstanceVariables;
+import com.boczek.c8demo.scenarios.group1.services.ShortenContentService;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
@@ -9,9 +10,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
+@SuppressWarnings("unused")
 public class ShortenContentWorker {
 
     private static final Logger logger = LoggerFactory.getLogger(ShortenContentWorker.class);
+
+    private ShortenContentService shortenContentService;
+
+    public ShortenContentWorker(ShortenContentService shortenContentService) {
+        this.shortenContentService = shortenContentService;
+    }
 
     @JobWorker(type = "shortenContentWorker", autoComplete = false)
     public void handle(final JobClient client, final ActivatedJob job)  {
@@ -19,11 +27,7 @@ public class ShortenContentWorker {
 
         var variables = job.getVariablesAsType(ProcessInstanceVariables.class);
 
-        var content = variables.getContent();
-
-        if (content != null && content.length() > ValidateInputWorker.VALIDATE_INPUT_MAX_CHARS) {
-            variables.setContent(content.substring(0, ValidateInputWorker.VALIDATE_INPUT_MAX_CHARS));
-        }
+        variables.setContent(shortenContentService.shortenContent(variables));
 
         variables.setInputApproved(false);
         client.newCompleteCommand(job.getKey())
