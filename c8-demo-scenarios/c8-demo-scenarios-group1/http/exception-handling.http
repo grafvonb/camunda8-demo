@@ -1,0 +1,35 @@
+### start start exception-handling with valid content
+POST http://localhost:8100/process/start-reactive
+Content-Type: application/json
+
+{
+  "bpmnProcessId": "c8-demo-scenarios-exception-handling",
+  "content": "the content is ok"
+}
+
+### start exception-handling with invalid content
+POST http://localhost:8100/process/start-reactive
+Content-Type: application/json
+
+{
+  "bpmnProcessId": "c8-demo-scenarios-exception-handling",
+  "content": "the content is bad: gambling"
+}
+
+### start exception-handling with too long content
+POST http://localhost:8100/process/start-reactive
+Content-Type: application/json
+
+{
+  "bpmnProcessId": "c8-demo-scenarios-exception-handling",
+  "content": "1234567890123456789012345678901234567890"
+}
+
+### start exception-handling with empty content
+POST http://localhost:8100/process/start-reactive
+Content-Type: application/json
+
+{
+  "bpmnProcessId": "c8-demo-scenarios-exception-handling",
+  "content": ""
+}
