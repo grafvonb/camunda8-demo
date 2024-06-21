@@ -22,7 +22,7 @@
       "label": "Approved?",
       "type": "checkbox",
       "id": "Field_08wi408",
-      "key": "variables.inputApproved",
+      "key": "inputApproved",
       "layout": {
         "row": "Row_0fw9363"
       }

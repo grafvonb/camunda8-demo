@@ -17,6 +17,12 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="validateInputTask-inputAcceptedEndEvent" sourceRef="validateInputTask" targetRef="inputAcceptedEndEvent" />
     <bpmn:boundaryEvent id="invalidContentErrorEvent" name="Invalid&#10;content &#10;error" attachedToRef="validateInputTask">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="=inputApproved" target="inputApproved" />
+          <zeebe:output source="=content" target="content" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
       <bpmn:outgoing>Flow_00zdqb3</bpmn:outgoing>
       <bpmn:errorEventDefinition id="ErrorEventDefinition_1hlamdh" errorRef="Error_1jw3sw7" />
     </bpmn:boundaryEvent>
@@ -27,7 +33,7 @@
       <bpmn:incoming>Flow_00zdqb3</bpmn:incoming>
       <bpmn:outgoing>Flow_09afd84</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:exclusiveGateway id="resolvedGateway" name="Resolved?">
+    <bpmn:exclusiveGateway id="resolvedGateway" name="Resolved?" default="resolvedGateway-inputRejectedEndEvent">
       <bpmn:incoming>Flow_09afd84</bpmn:incoming>
       <bpmn:outgoing>resolvedGateway-inputRejectedEndEvent</bpmn:outgoing>
       <bpmn:outgoing>resolvedGateway-validateInputTask</bpmn:outgoing>
@@ -37,11 +43,9 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_00zdqb3" sourceRef="invalidContentErrorEvent" targetRef="reviewInputContentTask" />
     <bpmn:sequenceFlow id="Flow_09afd84" sourceRef="reviewInputContentTask" targetRef="resolvedGateway" />
-    <bpmn:sequenceFlow id="resolvedGateway-inputRejectedEndEvent" name="No" sourceRef="resolvedGateway" targetRef="inputRejectedEndEvent">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=variables.inputApproved = false</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="resolvedGateway-inputRejectedEndEvent" name="No" sourceRef="resolvedGateway" targetRef="inputRejectedEndEvent" />
     <bpmn:sequenceFlow id="resolvedGateway-validateInputTask" name="Yes" sourceRef="resolvedGateway" targetRef="MergeGateway1">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=variables.inputApproved = true</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=inputApproved = true</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="MergeGateway1">
       <bpmn:incoming>inputValidatioRequiredStartEvent-validateInputTask</bpmn:incoming>

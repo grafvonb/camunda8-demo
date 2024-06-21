@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+
 @Component
 public class ValidateInputWorker {
 
@@ -18,6 +20,7 @@ public class ValidateInputWorker {
 
     private static final String CONTENT_TOO_LONG_ERROR_CODE = "contentTooLongError";
     private static final String INVALID_CONTENT_ERROR_CODE = "invalidContentError";
+    private static final long RETRY_BACKOFF_IN_SECONDS = 2;
 
     private ValidateInputService inputService;
 
@@ -45,18 +48,25 @@ public class ValidateInputWorker {
                     });
         } catch (ContentTooLongException ex) {
             logger.debug("Validation failed due to: {}", ex.getMessage());
+
+            variables.setInputApproved(false);
             client.newThrowErrorCommand(job.getKey())
                     .errorCode(CONTENT_TOO_LONG_ERROR_CODE)
                     .errorMessage(ex.getMessage())
+                    .variables(variables)
                     .send()
                     .exceptionally(throwable -> {
                         throw new RuntimeException("Could not complete job " + job, throwable);
                     });
         } catch (InvalidContentException ex) {
             logger.debug("Validation failed due to: {}", ex.getMessage());
+
+            variables.setInputApproved(false);
+            variables.setContent(variables.getContent() + " buba was here");
             client.newThrowErrorCommand(job.getKey())
                     .errorCode(INVALID_CONTENT_ERROR_CODE)
                     .errorMessage(ex.getMessage())
+                    .variables(variables)
                     .send()
                     .exceptionally(throwable -> {
                         throw new RuntimeException("Could not complete job " + job, throwable);
@@ -64,8 +74,11 @@ public class ValidateInputWorker {
         } catch (Exception ex) {
             var retries = job.getRetries();
             logger.debug("Validation failed due to: {}, retries left: {}", ex.getMessage(), retries - 1);
+
+            variables.setInputApproved(false);
             client.newFailCommand(job.getKey())
                     .retries(retries - 1)
+                    .retryBackoff(Duration.ofSeconds(RETRY_BACKOFF_IN_SECONDS))
                     .variables(variables)
                     .errorMessage(ex.getMessage())
                     .send()
