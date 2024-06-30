@@ -6,6 +6,7 @@ import com.boczek.c8demo.scenarios.group1.exceptions.InvalidContentException;
 import com.boczek.c8demo.scenarios.group1.services.ValidateInputService;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
+import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,12 +15,12 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 
 @Component
-public class ValidateInputWorker {
+public class ValidateInputWorker implements JobHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(ValidateInputWorker.class);
 
-    private static final String CONTENT_TOO_LONG_ERROR_CODE = "contentTooLongError";
-    private static final String INVALID_CONTENT_ERROR_CODE = "invalidContentError";
+    public static final String CONTENT_TOO_LONG_ERROR_CODE = "contentTooLongError";
+    public static final String INVALID_CONTENT_ERROR_CODE = "invalidContentError";
     private static final long RETRY_BACKOFF_IN_SECONDS = 2;
 
     private ValidateInputService inputService;
@@ -29,7 +30,6 @@ public class ValidateInputWorker {
     }
 
     @JobWorker(type = "validateInputWorker", autoComplete = false)
-    @SuppressWarnings("unused")
     public void handle(final JobClient client, final ActivatedJob job) {
         logger.debug("Starting validation...");
 
@@ -62,7 +62,6 @@ public class ValidateInputWorker {
             logger.debug("Validation failed due to: {}", ex.getMessage());
 
             variables.setInputApproved(false);
-            variables.setContent(variables.getContent() + " buba was here");
             client.newThrowErrorCommand(job.getKey())
                     .errorCode(INVALID_CONTENT_ERROR_CODE)
                     .errorMessage(ex.getMessage())

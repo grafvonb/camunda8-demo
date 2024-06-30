@@ -38,9 +38,6 @@
       <bpmn:outgoing>resolvedGateway-inputRejectedEndEvent</bpmn:outgoing>
       <bpmn:outgoing>resolvedGateway-validateInputTask</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:endEvent id="inputRejectedEndEvent" name="Input&#10;rejected">
-      <bpmn:incoming>resolvedGateway-inputRejectedEndEvent</bpmn:incoming>
-    </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_00zdqb3" sourceRef="invalidContentErrorEvent" targetRef="reviewInputContentTask" />
     <bpmn:sequenceFlow id="Flow_09afd84" sourceRef="reviewInputContentTask" targetRef="resolvedGateway" />
     <bpmn:sequenceFlow id="resolvedGateway-inputRejectedEndEvent" name="No" sourceRef="resolvedGateway" targetRef="inputRejectedEndEvent" />
@@ -67,9 +64,35 @@
       <bpmn:outgoing>Flow_0v7htw9</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0v7htw9" sourceRef="shortenContentTask" targetRef="MergeGateway1" />
+    <bpmn:endEvent id="inputRejectedEndEvent" name="Input&#10;rejected">
+      <bpmn:incoming>resolvedGateway-inputRejectedEndEvent</bpmn:incoming>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_11luvxo" errorRef="Error_1nc1fik" />
+    </bpmn:endEvent>
+    <bpmn:subProcess id="Activity_0v0wd51" triggeredByEvent="true">
+      <bpmn:startEvent id="inputRejectedErrorStartEvent" name="Input&#10;rejected error&#10;catched">
+        <bpmn:outgoing>Flow_1rymemr</bpmn:outgoing>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_0fsczdp" errorRef="Error_1nc1fik" />
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_1rymemr" sourceRef="inputRejectedErrorStartEvent" targetRef="logErrorMessage" />
+      <bpmn:endEvent id="inputRejectedErrorEndEvent" name="Input&#10;rejected error&#10;handled">
+        <bpmn:incoming>Flow_1g5kcuz</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_1g5kcuz" sourceRef="logErrorMessage" targetRef="inputRejectedErrorEndEvent" />
+      <bpmn:sendTask id="logErrorMessage" name="Log error">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="logMessageWorker" />
+          <zeebe:ioMapping>
+            <zeebe:input source="=&#34;Input rejected due to conten: &#34; + content" target="logMessage" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_1rymemr</bpmn:incoming>
+        <bpmn:outgoing>Flow_1g5kcuz</bpmn:outgoing>
+      </bpmn:sendTask>
+    </bpmn:subProcess>
   </bpmn:process>
   <bpmn:error id="Error_1jw3sw7" name="Invalid Content Error" errorCode="invalidContentError" />
   <bpmn:error id="Error_02kqklt" name="Content Too Long Error" errorCode="contentTooLongError" />
+  <bpmn:error id="Error_1nc1fik" name="Input Rejected Error" errorCode="inputRejectedError" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="c8-demo-scenarios-exception-handling">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="inputValidatioRequiredStartEvent">
@@ -98,12 +121,6 @@
           <dc:Bounds x="404" y="565" width="52" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0c0pph5_di" bpmnElement="inputRejectedEndEvent">
-        <dc:Bounds x="552" y="512" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="551" y="558" width="40" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0fjn4af_di" bpmnElement="MergeGateway1" isMarkerVisible="true">
         <dc:Bounds x="275" y="242" width="50" height="50" />
       </bpmndi:BPMNShape>
@@ -111,6 +128,38 @@
         <dc:Bounds x="380" y="80" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ex0qtt_di" bpmnElement="inputRejectedEndEvent">
+        <dc:Bounds x="552" y="512" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="551" y="558" width="40" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1mzl9mb_di" bpmnElement="Activity_0v0wd51" isExpanded="true">
+        <dc:Bounds x="270" y="630" width="360" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_188gz2p_di" bpmnElement="inputRejectedErrorStartEvent">
+        <dc:Bounds x="310" y="712" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="301" y="755" width="66" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0goankr_di" bpmnElement="inputRejectedErrorEndEvent">
+        <dc:Bounds x="552" y="712" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="537" y="755" width="66" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1eg9ilr_di" bpmnElement="logErrorMessage">
+        <dc:Bounds x="400" y="690" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1rymemr_di" bpmnElement="Flow_1rymemr">
+        <di:waypoint x="346" y="730" />
+        <di:waypoint x="400" y="730" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1g5kcuz_di" bpmnElement="Flow_1g5kcuz">
+        <di:waypoint x="500" y="730" />
+        <di:waypoint x="552" y="730" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1138qv8_di" bpmnElement="contentTooLongErrorEvent">
         <dc:Bounds x="412" y="209" width="36" height="36" />
         <bpmndi:BPMNLabel>

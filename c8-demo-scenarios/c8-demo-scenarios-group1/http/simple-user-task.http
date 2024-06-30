@@ -1,0 +1,8 @@
+### start start exception-handling with valid content
+POST http://localhost:8100/process/start-reactive
+Content-Type: application/json
+
+{
+  "bpmnProcessId": "c8-demo-scenarios-simple-user-task",
+  "content": "the content is ok"
+}
