@@ -27,6 +27,10 @@ server:
   port: 8100
 spring:
   security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:18080/auth/realms/adams-realm/protocol/openid-connect/certs
     user:
       name: admin
       password: admin

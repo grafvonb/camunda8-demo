@@ -1,6 +1,18 @@
+# curl -X POST -d 'client_secret=X0Tlz9KIB3zBWcnuajYTjg4gk038C0yG' -d 'client_id=adams-client-credentials' -d 'grant_type=client_credentials' http://localhost:18080/auth/realms/adams-realm/protocol/openid-connect/token
+POST http://localhost:18080/auth/realms/adams-realm/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_secret = X0Tlz9KIB3zBWcnuajYTjg4gk038C0yG &
+client_id = adams-client-credentials &
+grant_type = client_credentials
+
+###
+@jwtToken=eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJZOUpkMjRudFZNdGVfNHJVcXVubThlT1hlWVRHdGNlazZpV2Mtb0RKUVQ4In0.eyJleHAiOjE3MTk3NzE0ODEsImlhdCI6MTcxOTc3MTE4MSwianRpIjoiZWZmZGQzY2MtNGE3NC00OTc4LWE3MjQtYTgxY2I4NTczZWI4IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDoxODA4MC9hdXRoL3JlYWxtcy9hZGFtcy1yZWFsbSIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiJkMGJkZTc4YS1kNDIzLTQ2OTMtYTZmYy0wNmNkMTNmNGZjZGUiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJhZGFtcy1jbGllbnQtY3JlZGVudGlhbHMiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIi8qIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLWFkYW1zLXJlYWxtIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoiZW1haWwgcHJvZmlsZSBtaWNyb3Byb2ZpbGUtand0IiwidXBuIjoic2VydmljZS1hY2NvdW50LWFkYW1zLWNsaWVudC1jcmVkZW50aWFscyIsImNsaWVudEhvc3QiOiIxOTIuMTY4LjY1LjEiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImdyb3VwcyI6WyJkZWZhdWx0LXJvbGVzLWFkYW1zLXJlYWxtIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJzZXJ2aWNlLWFjY291bnQtYWRhbXMtY2xpZW50LWNyZWRlbnRpYWxzIiwiY2xpZW50QWRkcmVzcyI6IjE5Mi4xNjguNjUuMSIsImNsaWVudF9pZCI6ImFkYW1zLWNsaWVudC1jcmVkZW50aWFscyJ9.SIgCK8CXpiEsZOQ6aEUgv-TXqzhmzv7M7yGtPsd7dkwIrGvYujXJPy-X-T6kLHsAclt1D_C_y3jJYTkPMy0vwxSgfnz20Ic4W8nKSv5iX0kFCwvWXiqFVFr3i8HHpVEWeTyNwpTWVlCYanDPcuPk1MgCpDN3vvh7wxdltoXMVo6qymzEa7uOaNPJmYYR26bhHSZVmTkswO39d01W6REwPh4YIEdIhPEP5pBS0NheMKwjMB_xPF3rWUly0sMjFB5c5P6NrYYuaFy9vUX06AVIIVDbxgBt6CPwQB0RdZtLPSsUDs59OUXXTEYzDNgtNTgsWfIA6aXemi3BOERcZjgQQQ
+
 ### start start exception-handling with valid content
 POST http://localhost:8100/process/start-reactive
 Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
 
 {
   "bpmnProcessId": "c8-demo-scenarios-exception-handling",
@@ -10,6 +22,7 @@ Content-Type: application/json
 ### start exception-handling with invalid content
 POST http://localhost:8100/process/start-reactive
 Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
 
 {
   "bpmnProcessId": "c8-demo-scenarios-exception-handling",
@@ -19,6 +32,7 @@ Content-Type: application/json
 ### start exception-handling with too long content
 POST http://localhost:8100/process/start-reactive
 Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
 
 {
   "bpmnProcessId": "c8-demo-scenarios-exception-handling",
@@ -28,6 +42,7 @@ Content-Type: application/json
 ### start exception-handling with empty content
 POST http://localhost:8100/process/start-reactive
 Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
 
 {
   "bpmnProcessId": "c8-demo-scenarios-exception-handling",
