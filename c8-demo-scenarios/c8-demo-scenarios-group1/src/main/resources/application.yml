@@ -30,7 +30,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:18080/auth/realms/adams-realm/protocol/openid-connect/certs
+          # jwk-set-uri: http://localhost:18080/auth/realms/adams-realm/protocol/openid-connect/certs
+          issuer-uri: http://localhost:18080/auth/realms/adams-realm
     user:
       name: admin
       password: admin

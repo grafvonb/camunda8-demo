@@ -16,7 +16,7 @@ public class LogMessageWorker implements JobHandler {
 
     public static final String VARIABLE_NAME_LOG_MESSAGE = "logMessage";
 
-    @JobWorker(type = "logMessageWorker")
+    @JobWorker(type = "logMessageWorker", streamEnabled = true)
     public void handle(final JobClient client, final ActivatedJob job) {
 
         String message = (String) job.getVariable(VARIABLE_NAME_LOG_MESSAGE);

@@ -28,7 +28,7 @@ public class ScenariosGroup1Controller {
     }
 
     @PostMapping("/start-reactive")
-    // @PreAuthorize("hasRole('default-user-role')")
+    // @PreAuthorize("hasRole('process-start-role')")
     public Mono<ProcessInstanceEvent> startProcessInstanceReactive(@RequestBody StartProcessInstancePayload payload) {
         logger.debug("Starting process instance {} in a reactive way...", payload.bpmnProcessId());
 

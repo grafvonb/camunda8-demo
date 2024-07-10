@@ -3,14 +3,12 @@ package com.boczek.c8demo.scenarios.group1.services;
 import com.boczek.c8demo.scenarios.group1.ProcessInstanceVariables;
 import com.boczek.c8demo.scenarios.group1.workers.ValidateInputWorker;
 import io.camunda.zeebe.client.api.ZeebeFuture;
-import io.camunda.zeebe.client.api.command.FinalCommandStep;
 import io.camunda.zeebe.client.api.command.ThrowErrorCommandStep1;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -36,7 +34,7 @@ public class ErrorHandlingJobWorkerTest {
         when(processVariables.getContent()).thenReturn("Invalid content: gambling");
         when(job.getVariablesAsType(ProcessInstanceVariables.class)).thenReturn(processVariables);
 
-        ThrowErrorCommandStep1 commandStep1 = mock(ThrowErrorCommandStep1.class);
+        ThrowErrorCommandStep1 commandStep1 = mock(ThrowErrorCommandStep1.class, Answers.RETURNS_DEEP_STUBS);
         ThrowErrorCommandStep1.ThrowErrorCommandStep2 commandStep2 = mock(ThrowErrorCommandStep1.ThrowErrorCommandStep2.class, Answers.RETURNS_DEEP_STUBS);
         ZeebeFuture<Void> future = mock(ZeebeFuture.class);
 
@@ -44,9 +42,7 @@ public class ErrorHandlingJobWorkerTest {
                 .thenReturn(commandStep1);
         when(commandStep1.errorCode(anyString())).thenReturn(commandStep2);
         when(commandStep2.errorMessage(anyString())).thenReturn(commandStep2);
-        when(commandStep2.variables(Object.class)).thenReturn(commandStep2);
-        when(commandStep2.send()).thenReturn(future);
-        when(future.join()).thenReturn(null);
+        when(commandStep2.variables(any(Object.class))).thenReturn(commandStep2);
 
         ValidateInputWorker worker = new ValidateInputWorker(validateInputService);
         worker.handle(jobClient, job);
@@ -55,6 +51,6 @@ public class ErrorHandlingJobWorkerTest {
         verify(jobClient).newThrowErrorCommand(job.getKey());
         verify(commandStep1).errorCode(ValidateInputWorker.INVALID_CONTENT_ERROR_CODE);
         verify(commandStep2).errorMessage("The content must not contain one of the following words: [violence, drugs, alcohol, gambling, abuse, profanity, hate, terror, nudity, weapons]");
-        // verify(commandStep2).send();
+        verify(commandStep2).send();
     }
 }
