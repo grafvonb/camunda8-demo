@@ -34,7 +34,7 @@ public class ErrorHandlingJobWorkerTest {
         when(processVariables.getContent()).thenReturn("Invalid content: gambling");
         when(job.getVariablesAsType(ProcessInstanceVariables.class)).thenReturn(processVariables);
 
-        ThrowErrorCommandStep1 commandStep1 = mock(ThrowErrorCommandStep1.class, Answers.RETURNS_DEEP_STUBS);
+        ThrowErrorCommandStep1 commandStep1 = mock(ThrowErrorCommandStep1.class);
         ThrowErrorCommandStep1.ThrowErrorCommandStep2 commandStep2 = mock(ThrowErrorCommandStep1.ThrowErrorCommandStep2.class, Answers.RETURNS_DEEP_STUBS);
         ZeebeFuture<Void> future = mock(ZeebeFuture.class);
 
