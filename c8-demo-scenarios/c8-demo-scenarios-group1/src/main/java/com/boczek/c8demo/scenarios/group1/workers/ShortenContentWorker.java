@@ -6,7 +6,6 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
-import io.camunda.zeebe.spring.client.annotation.VariablesAsType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -23,7 +22,7 @@ public class ShortenContentWorker implements JobHandler {
         this.shortenContentService = shortenContentService;
     }
 
-    @JobWorker(type = "shortenContentWorker", autoComplete = false, streamEnabled = false)
+    @JobWorker(type = "shortenContentWorker", autoComplete = false)
     public void handle(final JobClient client, final ActivatedJob job)  {
         logger.debug("Running automatic shortening of the content...");
 

@@ -45,6 +45,8 @@ public class SimpleUserTaskProcessTest {
         var variables = new ProcessInstanceVariables();
         variables.setContent("Valid content");
 
+
+
         var processInstance = startProcessInstance(client, ScenariosGroup1Consts.SIMPLE_USER_TASK_BPMNPROCESSID, variables);
 
         BpmnAssert.assertThat(processInstance)

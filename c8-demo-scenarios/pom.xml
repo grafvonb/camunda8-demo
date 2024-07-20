@@ -17,27 +17,27 @@
     </modules>
 
     <properties>
-        <spring-zeebe.version>8.5.1</spring-zeebe.version>
-        <spring-zeebe.version2>8.5.0</spring-zeebe.version2>
+        <spring-zeebe.version>8.5.3</spring-zeebe.version>
+        <spring-zeebe.version2>8.5.3</spring-zeebe.version2>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>io.camunda.spring</groupId>
-            <artifactId>spring-boot-starter-camunda</artifactId>
+            <groupId>io.camunda</groupId>
+            <artifactId>spring-boot-starter-camunda-sdk</artifactId>
             <version>${spring-zeebe.version}</version>
         </dependency>
 
-        <dependency>
+<!--        <dependency>
             <groupId>io.camunda.spring</groupId>
             <artifactId>spring-boot-starter-camunda-test</artifactId>
             <version>${spring-zeebe.version}</version>
             <scope>test</scope>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>io.camunda</groupId>
             <artifactId>zeebe-process-test-extension</artifactId>
-            <version>${spring-zeebe.version2}</version>
+            <version>${spring-zeebe.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

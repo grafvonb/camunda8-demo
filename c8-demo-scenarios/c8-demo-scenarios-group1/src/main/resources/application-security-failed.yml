@@ -1,0 +1,49 @@
+microservice-one:
+  rest:
+    base-url: http://localhost:8101
+microservice-two:
+  rest:
+    base-url: http://localhost:8102
+camunda:
+  client:
+    mode: simple
+#    mode: oidc
+    region: bru-2
+    auth:
+      client-secret: s1~QzHELGy2Lp-gBWCT78GgmksyCgYLAPKnxzCIo49SnT_.Cgf0H68SPkf8d7rtc
+      client-id: 9D.iPo8Hpn8EYCB7B3IYAer-1JG3P_pA
+    cluster-id: 5d5eb742-df55-47f2-be3f-0989908ae15a
+    zeebe:
+      audience: zeebe.camunda.io
+      override-authority: https://login.cloud.camunda.io/oauth/token
+zeebe:
+  client:
+    gateway:
+      address: 127.0.0.1:26500
+    worker:
+      stream:
+        enabled: true
+server:
+  port: 8100
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # jwk-set-uri: http://localhost:18080/auth/realms/adams-realm/protocol/openid-connect/certs
+          issuer-uri: http://localhost:18080/auth/realms/adams-realm
+    user:
+      name: admin
+      password: admin
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+logging:
+  level:
+    com.boczek: DEBUG
+#    io.camunda: DEBUG
+  pattern:
+#    console: "%d{HH:mm:ss.SSS} [%15.15t] %m%n"
+#    console: "%d{yyyy-MM-dd HH:mm:ss} %-5p %c - %m%n"
