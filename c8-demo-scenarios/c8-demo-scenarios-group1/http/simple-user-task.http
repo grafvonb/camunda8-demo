@@ -1,4 +1,4 @@
-### start start exception-handling with valid content
+### start simple-user-task with valid content
 POST http://localhost:8100/process/start-reactive
 Content-Type: application/json
 

@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -15,14 +14,10 @@ public class ValidateInputService {
 
     private static final Logger logger = LoggerFactory.getLogger(ValidateInputService.class);
 
-    private static final List<String> inappropriateWords = Arrays.asList(
-            "violence", "drugs", "alcohol", "gambling", "abuse",
-            "profanity", "hate", "terror", "nudity", "weapons"
-    );
-
     public static final int VALIDATE_INPUT_MAX_CHARS = 30;
 
-    public boolean validateContent(ProcessInstanceVariables variables) throws ContentTooLongException, InvalidContentException {
+    public boolean validateContent(ProcessInstanceVariables variables, List<String> inappropriateWords) throws ContentTooLongException, InvalidContentException {
+
 
         if (variables.getContent() == null || variables.getContent().isBlank()) {
             throw new IllegalArgumentException("The content must not be null or empty!");

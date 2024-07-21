@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @Component
 public class ValidateInputWorker implements JobHandler {
@@ -37,7 +39,13 @@ public class ValidateInputWorker implements JobHandler {
 
         try {
 
-            var isApproved = inputService.validateContent(variables);
+            var defaultInappropriateWords = "violence, drugs, alcohol, gambling, abuse, profanity, hate, terror, nudity, weapons";
+            var inappropriateWords = job.getCustomHeaders().getOrDefault("inappropriateWords", defaultInappropriateWords);
+            var inappropriateWordsList = Arrays.stream(inappropriateWords.split(","))
+                    .map(String::trim)
+                    .collect(Collectors.toList());
+
+            var isApproved = inputService.validateContent(variables, inappropriateWordsList);
 
             variables.setInputApproved(isApproved);
             client.newCompleteCommand(job.getKey())

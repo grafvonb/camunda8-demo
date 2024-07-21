@@ -1,0 +1,8 @@
+### start simple-system-task with valid content
+POST http://localhost:8100/process/start-reactive
+Content-Type: application/json
+
+{
+  "bpmnProcessId": "c8-demo-scenarios-simple-system-task",
+  "content": "the content: adam"
+}
