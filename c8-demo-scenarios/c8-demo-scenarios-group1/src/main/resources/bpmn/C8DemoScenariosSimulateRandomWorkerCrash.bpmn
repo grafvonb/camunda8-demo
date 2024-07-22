@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1csjbye" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.25.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.5.0">
-  <bpmn:process id="c8-demo-scenarios-simple-system-task" name="C8 Demo Scenarios Simple System Task" isExecutable="true">
+  <bpmn:process id="c8-demo-scenarios-simulate-worker-crash" name="C8 Demo Scenarios Simulate Worker Crash" isExecutable="true">
     <bpmn:extensionElements>
       <zeebe:properties>
         <zeebe:property name="version" value="v1.0.0" />
@@ -10,81 +10,70 @@
       <bpmn:extensionElements />
       <bpmn:outgoing>Flow_0s526mt</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_0s526mt" sourceRef="validateInputStartEvent" targetRef="logMessageTask" />
+    <bpmn:sequenceFlow id="Flow_0s526mt" sourceRef="validateInputStartEvent" targetRef="logMessage1Task" />
     <bpmn:endEvent id="contentValidatedEndEvent" name="Content validated">
-      <bpmn:incoming>Flow_0k0uvoy</bpmn:incoming>
+      <bpmn:incoming>Flow_1rmd2bn</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0k0uvoy" sourceRef="validateContentTask" targetRef="contentValidatedEndEvent" />
-    <bpmn:sequenceFlow id="Flow_0hpsn5m" sourceRef="logMessageTask" targetRef="validateContentTask" />
-    <bpmn:sendTask id="logMessageTask" name="Log message">
+    <bpmn:sequenceFlow id="Flow_0k0uvoy" sourceRef="simulateWorkerCrash" targetRef="logMessage2Task" />
+    <bpmn:sequenceFlow id="Flow_0hpsn5m" sourceRef="logMessage1Task" targetRef="simulateWorkerCrash" />
+    <bpmn:sendTask id="logMessage1Task" name="Log message">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="logMessageWorker" />
         <zeebe:ioMapping>
-          <zeebe:input source="=&#34;Input to validate: &#34; + content" target="logMessage" />
+          <zeebe:input source="=&#34;Running into danger zone...&#34;" target="logMessage" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0s526mt</bpmn:incoming>
       <bpmn:outgoing>Flow_0hpsn5m</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:serviceTask id="validateContentTask" name="Validate content">
+    <bpmn:serviceTask id="simulateWorkerCrash" name="Simulate worker crash">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="validateInputWorker" retries="5" />
+        <zeebe:taskDefinition type="simulateWorkerCrash" retries="2" />
         <zeebe:taskHeaders>
-          <zeebe:header key="inappropriateWords" value="adam,bogdan,buba" />
+          <zeebe:header key="crashProbabilityInPercent" value="60" />
         </zeebe:taskHeaders>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0hpsn5m</bpmn:incoming>
       <bpmn:outgoing>Flow_0k0uvoy</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:boundaryEvent id="Event_0fwf37r" name="Invalid&#10;content &#10;error" attachedToRef="validateContentTask">
+    <bpmn:sendTask id="logMessage2Task" name="Log message">
       <bpmn:extensionElements>
+        <zeebe:taskDefinition type="logMessageWorker" />
         <zeebe:ioMapping>
-          <zeebe:output source="=inputApproved" target="inputApproved" />
-          <zeebe:output source="=content" target="content" />
+          <zeebe:input source="=&#34;Danger zone exited...&#34;" target="logMessage" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
-      <bpmn:outgoing>Flow_08uws1u</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_1x42poo" errorRef="Error_1dbpumz" />
-    </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="Flow_08uws1u" sourceRef="Event_0fwf37r" targetRef="invalidContentError" />
-    <bpmn:endEvent id="invalidContentError" name="Invalid Content&#10;Error">
-      <bpmn:incoming>Flow_08uws1u</bpmn:incoming>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_0dlqspy" errorRef="Error_1dbpumz" />
-    </bpmn:endEvent>
+      <bpmn:incoming>Flow_0k0uvoy</bpmn:incoming>
+      <bpmn:outgoing>Flow_1rmd2bn</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:sequenceFlow id="Flow_1rmd2bn" sourceRef="logMessage2Task" targetRef="contentValidatedEndEvent" />
   </bpmn:process>
   <bpmn:error id="Error_1dbpumz" name="Invalid Content Error" errorCode="invalidContentError" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="c8-demo-scenarios-simple-system-task">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="c8-demo-scenarios-simulate-worker-crash">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="validateInputStartEvent">
         <dc:Bounds x="179" y="99" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="179" y="142" width="39" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0hxz77o_di" bpmnElement="contentValidatedEndEvent">
-        <dc:Bounds x="572" y="99" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="548" y="142" width="86" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0idrr98_di" bpmnElement="logMessageTask">
+      <bpmndi:BPMNShape id="Activity_0idrr98_di" bpmnElement="logMessage1Task">
         <dc:Bounds x="270" y="77" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0n6nbpf_di" bpmnElement="validateContentTask">
+      <bpmndi:BPMNShape id="Activity_0n6nbpf_di" bpmnElement="simulateWorkerCrash">
         <dc:Bounds x="420" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_063atl3_di" bpmnElement="invalidContentError">
-        <dc:Bounds x="572" y="222" width="36" height="36" />
+      <bpmndi:BPMNShape id="Event_0hxz77o_di" bpmnElement="contentValidatedEndEvent">
+        <dc:Bounds x="722" y="99" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="554" y="265" width="74" height="27" />
+          <dc:Bounds x="698" y="142" width="86" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1yvhl6y" bpmnElement="Event_0fwf37r">
-        <dc:Bounds x="462" y="139" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="501" y="170" width="37" height="40" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="BPMNShape_0r84ebm" bpmnElement="logMessage2Task">
+        <dc:Bounds x="570" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0s526mt_di" bpmnElement="Flow_0s526mt">
         <di:waypoint x="215" y="117" />
@@ -92,16 +81,15 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0k0uvoy_di" bpmnElement="Flow_0k0uvoy">
         <di:waypoint x="520" y="117" />
-        <di:waypoint x="572" y="117" />
+        <di:waypoint x="570" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0hpsn5m_di" bpmnElement="Flow_0hpsn5m">
         <di:waypoint x="370" y="117" />
         <di:waypoint x="420" y="117" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_08uws1u_di" bpmnElement="Flow_08uws1u">
-        <di:waypoint x="480" y="175" />
-        <di:waypoint x="480" y="240" />
-        <di:waypoint x="572" y="240" />
+      <bpmndi:BPMNEdge id="Flow_1rmd2bn_di" bpmnElement="Flow_1rmd2bn">
+        <di:waypoint x="670" y="117" />
+        <di:waypoint x="722" y="117" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
