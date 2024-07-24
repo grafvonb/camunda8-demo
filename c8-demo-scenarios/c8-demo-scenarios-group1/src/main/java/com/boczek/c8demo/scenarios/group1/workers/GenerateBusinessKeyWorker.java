@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.util.UUID;
 import java.util.random.RandomGenerator;
 
@@ -19,8 +20,12 @@ public class GenerateBusinessKeyWorker implements JobHandler {
 
     public static final String VARIABLE_NAME_BUSINESS_KEY = "businessKey";
 
-    @JobWorker(type = "generateBusinessKeyWorker", autoComplete = false)
-    public void handle(final JobClient client, final ActivatedJob job) {
+    @JobWorker(type = "generateBusinessKeyWorker", autoComplete = false, timeout = 100)
+    public void handle(final JobClient client, final ActivatedJob job) throws InterruptedException {
+
+        Duration duration = Duration.ofMillis(RandomGenerator.getDefault().nextLong(1000));
+        logger.debug("Sleeping for {} seconds...", duration.toMillisPart());
+        Thread.sleep(duration);
 
         UUID businessKey = UUID.randomUUID();
         client.newCompleteCommand(job.getKey())

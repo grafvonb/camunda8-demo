@@ -34,6 +34,9 @@
     <bpmn:userTask id="reviewInputContentTask" name="Review input&#39;s content">
       <bpmn:extensionElements>
         <zeebe:formDefinition formId="c8-demo-scenarios-error-handling-review-form" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;Extra info for the tasklist.&#34;" target="taskContextDisplayName" />
+        </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_00zdqb3</bpmn:incoming>
       <bpmn:outgoing>Flow_09afd84</bpmn:outgoing>
