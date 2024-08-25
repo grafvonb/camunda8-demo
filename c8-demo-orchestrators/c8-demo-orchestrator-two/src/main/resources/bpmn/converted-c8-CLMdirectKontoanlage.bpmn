@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:conversion="http://camunda.org/schema/conversion/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0daix0m" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.22.0" conversion:converterVersion="0.8.9-SNAPSHOT" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.4.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:conversion="http://camunda.org/schema/conversion/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0daix0m" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.25.0" conversion:converterVersion="0.8.9-SNAPSHOT" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.4.0">
   <bpmn:process id="CLMdirectKontoanlageProzess" name="CLM.direct Kontoanlage" processType="None" isClosed="false" isExecutable="true">
     <bpmn:extensionElements>
       <conversion:message severity="INFO">Unused attribute 'historyTimeToLive' on 'process' is removed.</conversion:message>
@@ -66,38 +66,42 @@
       <bpmn:signalEventDefinition id="SignalEventDefinition_0xdpyag" signalRef="Signal_0gsljc0" />
     </bpmn:endEvent>
     <bpmn:subProcess id="AuftragsbearbeitungCLMK" name="Auftrags-bearbeitung CLMK">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_0srnx3l</bpmn:incoming>
       <bpmn:outgoing>Flow_16tn9ju</bpmn:outgoing>
       <bpmn:startEvent id="BearbeitungGestartetStartEvent" name="Bearbeitung&#10;gestartet">
         <bpmn:outgoing>Flow_1qajl51</bpmn:outgoing>
       </bpmn:startEvent>
-      <bpmn:sequenceFlow id="Flow_1qajl51" sourceRef="BearbeitungGestartetStartEvent" targetRef="Activity_12oh1jm" />
-      <bpmn:exclusiveGateway id="Gateway_0c0zpbl" default="Flow_0sfbanr">
+      <bpmn:sequenceFlow id="Flow_1qajl51" sourceRef="BearbeitungGestartetStartEvent" targetRef="AuftragsbearbeitungCLMKCheckTask" />
+      <bpmn:exclusiveGateway id="ExtraAufgabenEfordelichGateway" name="Zusätzliche Aufgaben erforderlich?" default="Flow_0sfbanr">
         <bpmn:incoming>Flow_04rjnrc</bpmn:incoming>
-        <bpmn:outgoing>Flow_10q75ic</bpmn:outgoing>
+        <bpmn:outgoing>extraAufgabenFlow</bpmn:outgoing>
         <bpmn:outgoing>Flow_0sfbanr</bpmn:outgoing>
       </bpmn:exclusiveGateway>
-      <bpmn:sequenceFlow id="Flow_04rjnrc" sourceRef="Activity_12oh1jm" targetRef="Gateway_0c0zpbl" />
-      <bpmn:sequenceFlow id="Flow_10q75ic" sourceRef="Gateway_0c0zpbl" targetRef="ClmkAufgabeTask">
+      <bpmn:sequenceFlow id="Flow_04rjnrc" sourceRef="AuftragsbearbeitungCLMKCheckTask" targetRef="ExtraAufgabenEfordelichGateway" />
+      <bpmn:sequenceFlow id="extraAufgabenFlow" sourceRef="ExtraAufgabenEfordelichGateway" targetRef="ClmkAufgabeTask">
         <bpmn:extensionElements>
           <conversion:message severity="TASK">Condition expression: Transformed expression: '${clmkAufgaben.size()&gt;0}' -&gt; '=clmkAufgaben.size()&gt;0'. Method invocation is not possible in FEEL.</conversion:message>
         </bpmn:extensionElements>
-        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=clmkAufgaben.size()&gt;0</bpmn:conditionExpression>
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=clmkAufgaben != null</bpmn:conditionExpression>
       </bpmn:sequenceFlow>
-      <bpmn:exclusiveGateway id="Gateway_1002mcq">
+      <bpmn:exclusiveGateway id="MergeGateway1">
         <bpmn:incoming>Flow_0x7rrtt</bpmn:incoming>
         <bpmn:incoming>Flow_0sfbanr</bpmn:incoming>
-        <bpmn:outgoing>Flow_1k790ky</bpmn:outgoing>
+        <bpmn:outgoing>mergeGateway2</bpmn:outgoing>
       </bpmn:exclusiveGateway>
-      <bpmn:sequenceFlow id="Flow_0x7rrtt" sourceRef="ClmkAufgabeTask" targetRef="Gateway_1002mcq" />
-      <bpmn:sequenceFlow id="Flow_0sfbanr" sourceRef="Gateway_0c0zpbl" targetRef="Gateway_1002mcq" />
-      <bpmn:userTask id="ClmkAufgabeTask" name="${clmkAufgabe}" implementation="##unspecified">
+      <bpmn:sequenceFlow id="Flow_0x7rrtt" sourceRef="ClmkAufgabeTask" targetRef="MergeGateway1" />
+      <bpmn:sequenceFlow id="Flow_0sfbanr" sourceRef="ExtraAufgabenEfordelichGateway" targetRef="MergeGateway1" />
+      <bpmn:userTask id="ClmkAufgabeTask" name="Extra Aufgabe" implementation="##unspecified">
         <bpmn:extensionElements>
           <conversion:message severity="TASK">Collecting results in a multi instance is now natively possible with Zeebe. Please review.</conversion:message>
           <conversion:message severity="REVIEW">Attribute 'collection' on 'multiInstanceLoopCharacteristics' was mapped. Please review transformed expression: '${clmkAufgaben}' -&gt; '=clmkAufgaben'.</conversion:message>
           <conversion:message severity="INFO">Attribute 'elementVariable' on 'multiInstanceLoopCharacteristics' was mapped. Is set to Zeebe input element.</conversion:message>
+          <zeebe:ioMapping>
+            <zeebe:input source="=clmkAufgabe" target="taskContextDisplayName" />
+          </zeebe:ioMapping>
         </bpmn:extensionElements>
-        <bpmn:incoming>Flow_10q75ic</bpmn:incoming>
+        <bpmn:incoming>extraAufgabenFlow</bpmn:incoming>
         <bpmn:outgoing>Flow_0x7rrtt</bpmn:outgoing>
         <bpmn:multiInstanceLoopCharacteristics>
           <bpmn:documentation />
@@ -106,34 +110,34 @@
           </bpmn:extensionElements>
         </bpmn:multiInstanceLoopCharacteristics>
       </bpmn:userTask>
-      <bpmn:sequenceFlow id="Flow_1k790ky" sourceRef="Gateway_1002mcq" targetRef="KontoanlageFreigebenTaslk" />
+      <bpmn:sequenceFlow id="mergeGateway2" sourceRef="MergeGateway1" targetRef="KontoanlageFreigebenTask" />
       <bpmn:endEvent id="BearbeitungAbgeschlossenEndEvent" name="Bearbeitung&#10;abgeschlossen">
         <bpmn:incoming>Flow_0qe6vex</bpmn:incoming>
       </bpmn:endEvent>
-      <bpmn:sequenceFlow id="Flow_0q8t7bl" sourceRef="KontoanlageFreigebenTaslk" targetRef="BearbeitungOkGateway" />
-      <bpmn:userTask id="KontoanlageFreigebenTaslk" name="Kontoanlage freigeben bzw. weitere Aufgaben definieren" implementation="##unspecified">
-        <bpmn:incoming>Flow_1k790ky</bpmn:incoming>
+      <bpmn:sequenceFlow id="Flow_0q8t7bl" sourceRef="KontoanlageFreigebenTask" targetRef="BearbeitungOkGateway" />
+      <bpmn:userTask id="KontoanlageFreigebenTask" name="Kontoanlage freigeben bzw. weitere Aufgaben definieren" implementation="##unspecified">
+        <bpmn:incoming>mergeGateway2</bpmn:incoming>
         <bpmn:outgoing>Flow_0q8t7bl</bpmn:outgoing>
       </bpmn:userTask>
-      <bpmn:serviceTask id="Activity_12oh1jm" name="Kontoanlage prüfen ggf. Aufgaben definieren" implementation="##WebService">
+      <bpmn:serviceTask id="AuftragsbearbeitungCLMKCheckTask" name="Kontoanlage prüfen ggf. Aufgaben definieren" implementation="##WebService">
         <bpmn:extensionElements>
           <conversion:message severity="REVIEW">Attribute 'delegateExpression' on 'serviceTask' was mapped. Delegate call to '${auftragsbearbeitungCLMKHandler}' was transformed to job type 'camunda-7-adapter'. Please review your implementation.</conversion:message>
-          <zeebe:taskHeaders>
-            <zeebe:header key="delegateExpression" value="${auftragsbearbeitungCLMKHandler}" />
-          </zeebe:taskHeaders>
-          <zeebe:taskDefinition type="camunda-7-adapter" />
+          <zeebe:taskDefinition type="auftragsbearbeitungCLMKCheckWorker" />
+          <zeebe:ioMapping>
+            <zeebe:output source="=clmkAufgaben" target="clmkAufgaben" />
+          </zeebe:ioMapping>
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_1qajl51</bpmn:incoming>
         <bpmn:incoming>Flow_1bze7qe</bpmn:incoming>
         <bpmn:outgoing>Flow_04rjnrc</bpmn:outgoing>
       </bpmn:serviceTask>
-      <bpmn:exclusiveGateway id="BearbeitungOkGateway" name="Weiter Aufgaben&#10;erforderlich?" default="Flow_0qe6vex">
+      <bpmn:exclusiveGateway id="BearbeitungOkGateway" name="Weitere Aufgaben&#10;erforderlich?" default="Flow_0qe6vex">
         <bpmn:incoming>Flow_0q8t7bl</bpmn:incoming>
         <bpmn:outgoing>Flow_0qe6vex</bpmn:outgoing>
         <bpmn:outgoing>Flow_1bze7qe</bpmn:outgoing>
       </bpmn:exclusiveGateway>
       <bpmn:sequenceFlow id="Flow_0qe6vex" sourceRef="BearbeitungOkGateway" targetRef="BearbeitungAbgeschlossenEndEvent" />
-      <bpmn:sequenceFlow id="Flow_1bze7qe" name="Ja" sourceRef="BearbeitungOkGateway" targetRef="Activity_12oh1jm">
+      <bpmn:sequenceFlow id="Flow_1bze7qe" name="Ja" sourceRef="BearbeitungOkGateway" targetRef="AuftragsbearbeitungCLMKCheckTask">
         <bpmn:extensionElements>
           <conversion:message severity="REVIEW">Condition expression: Please review transformed expression: '${false}' -&gt; '=false'.</conversion:message>
         </bpmn:extensionElements>
@@ -268,10 +272,13 @@
           <dc:Bounds x="169" y="245" width="60" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0c0zpbl_di" bpmnElement="Gateway_0c0zpbl" isMarkerVisible="true">
+      <bpmndi:BPMNShape id="Gateway_0c0zpbl_di" bpmnElement="ExtraAufgabenEfordelichGateway" isMarkerVisible="true">
         <dc:Bounds x="423" y="195" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="421" y="252" width="62" height="40" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1002mcq_di" bpmnElement="Gateway_1002mcq" isMarkerVisible="true">
+      <bpmndi:BPMNShape id="Gateway_1002mcq_di" bpmnElement="MergeGateway1" isMarkerVisible="true">
         <dc:Bounds x="603" y="195" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_17zrj0w_di" bpmnElement="ClmkAufgabeTask">
@@ -284,18 +291,18 @@
           <dc:Bounds x="941" y="245" width="74" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1y8vh5r_di" bpmnElement="KontoanlageFreigebenTaslk">
+      <bpmndi:BPMNShape id="Activity_1y8vh5r_di" bpmnElement="KontoanlageFreigebenTask">
         <dc:Bounds x="698" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_01g7wm8_di" bpmnElement="Activity_12oh1jm">
+      <bpmndi:BPMNShape id="Activity_01g7wm8_di" bpmnElement="AuftragsbearbeitungCLMKCheckTask">
         <dc:Bounds x="268" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1dhw6km_di" bpmnElement="BearbeitungOkGateway" isMarkerVisible="true">
         <dc:Bounds x="853" y="195" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="839" y="165" width="82" height="27" />
+          <dc:Bounds x="836" y="165" width="88" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1qajl51_di" bpmnElement="Flow_1qajl51">
@@ -306,7 +313,7 @@
         <di:waypoint x="368" y="220" />
         <di:waypoint x="423" y="220" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_10q75ic_di" bpmnElement="Flow_10q75ic">
+      <bpmndi:BPMNEdge id="Flow_10q75ic_di" bpmnElement="extraAufgabenFlow">
         <di:waypoint x="448" y="195" />
         <di:waypoint x="448" y="120" />
         <di:waypoint x="488" y="120" />
@@ -320,7 +327,7 @@
         <di:waypoint x="473" y="220" />
         <di:waypoint x="603" y="220" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1k790ky_di" bpmnElement="Flow_1k790ky">
+      <bpmndi:BPMNEdge id="Flow_1k790ky_di" bpmnElement="mergeGateway2">
         <di:waypoint x="653" y="220" />
         <di:waypoint x="698" y="220" />
       </bpmndi:BPMNEdge>

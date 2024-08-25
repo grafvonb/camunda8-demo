@@ -5,14 +5,14 @@ Content-Type: application/json
 {
   "runtimeConfig": {
     "bpmnProcessId": "CLMdirectHauptauftragV2",
-    "debugSkipCLMK": true
+    "debugSkipCLMK": false
   }
 }
 
 ### add neukundenanlage
 @bpmnProcessId = CLMdirectHauptauftragV2
-@processBusinessKey = a477dfcc-4bfc-4721-9a23-3dae5bb71cbc
-@processInstanceKey = 2251799815949619
+@processBusinessKey = a1e159b5-f89f-4b69-82ad-b6d0f3edd84b
+@processInstanceKey = 2251799814427970
 
 POST http://localhost:8100/process/neukundenanlage
 Content-Type: application/json
@@ -30,7 +30,7 @@ POST http://localhost:8100/process/kontoanlage
 Content-Type: application/json
 
 {
-  "kontoName": "Konto2",
+  "kontoName": "Konto3",
   "messageRuntimeConfig": {
     "messageCorrelationKey": "{{processBusinessKey}}"
   }
@@ -42,7 +42,7 @@ POST http://localhost:8100/process/uvzanlage
 Content-Type: application/json
 
 {
-  "uvzName": "Uvz2",
+  "uvzName": "Uvz3",
   "kontoName": "Konto2",
   "messageRuntimeConfig": {
     "messageCorrelationKey": "{{processBusinessKey}}"
