@@ -16,8 +16,11 @@ public class ValidateInputService {
 
     public static final int VALIDATE_INPUT_MAX_CHARS = 30;
 
-    public boolean validateContent(ProcessInstanceVariables variables, List<String> inappropriateWords) throws ContentTooLongException, InvalidContentException {
+    public boolean validateContent(ProcessInstanceVariables variables) throws ContentTooLongException, InvalidContentException {
+        return this.validateContent(variables, null);
+    }
 
+    public boolean validateContent(ProcessInstanceVariables variables, List<String> inappropriateWords) throws ContentTooLongException, InvalidContentException {
 
         if (variables.getContent() == null || variables.getContent().isBlank()) {
             throw new IllegalArgumentException("The content must not be null or empty!");
@@ -27,9 +30,11 @@ public class ValidateInputService {
             throw new ContentTooLongException("The content must not be longer as %s".formatted(VALIDATE_INPUT_MAX_CHARS));
         }
 
-        var isGoodForTheWorld = inappropriateWords.stream().noneMatch(variables.getContent().toLowerCase()::contains);
-        if (!isGoodForTheWorld) {
-            throw new InvalidContentException("The content must not contain one of the following words: %s".formatted(inappropriateWords));
+        if (inappropriateWords!=null && !inappropriateWords.isEmpty()) {
+            var isGoodForTheWorld = inappropriateWords.stream().noneMatch(variables.getContent().toLowerCase()::contains);
+            if (!isGoodForTheWorld) {
+                throw new InvalidContentException("The content must not contain one of the following words: %s".formatted(inappropriateWords));
+            }
         }
 
         return true;

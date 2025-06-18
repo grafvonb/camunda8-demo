@@ -2,6 +2,7 @@ package com.boczek.c8demo.orchestrator.one.workers;
 
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
+import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import com.boczek.c8demo.orchestrator.one.model.OneEntity;
 import com.boczek.c8demo.orchestrator.one.services.OrchestratorOneService;
@@ -11,12 +12,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 @SuppressWarnings("unused")
-public class LogInformationWorker {
+public class LogInformationWorker implements JobHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(LogInformationWorker.class);
 
     @JobWorker(type = "logInformationWorker")
-    public void logInformationWorker(final JobClient client, final ActivatedJob job) {
+    public void handle(final JobClient client, final ActivatedJob job) {
 
         ProcessInstanceVariables variables = job.getVariablesAsType(ProcessInstanceVariables.class);
 

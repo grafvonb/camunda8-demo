@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_088araw" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.33.1" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
+  <bpmn:process id="CrashWithIncidentProcessID" name="Crash With Incident Process" isExecutable="true">
+    <bpmn:extensionElements>
+      <zeebe:versionTag value="v1.0.0" />
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="Started_Event" name="Started">
+      <bpmn:outgoing>Flow_1j8gzsr</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1j8gzsr" sourceRef="Started_Event" targetRef="CrashWithIncident_Task" />
+    <bpmn:endEvent id="Finished_Event" name="Finished">
+      <bpmn:incoming>Flow_0ntb8un</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0ntb8un" sourceRef="CrashWithIncident_Task" targetRef="Finished_Event" />
+    <bpmn:scriptTask id="CrashWithIncident_Task" name="Crash with incident">
+      <bpmn:extensionElements>
+        <zeebe:script expression="=if (age &#60; 0) then &#34;No&#34; else if (age &#62; 18 and age &#60; 65) then &#34;Yes&#34; else &#34;Maybe&#34;" resultVariable="eligible" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1j8gzsr</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ntb8un</bpmn:outgoing>
+    </bpmn:scriptTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CrashWithIncidentProcessID">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="Started_Event">
+        <dc:Bounds x="182" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="183" y="145" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1m7in1f_di" bpmnElement="Finished_Event">
+        <dc:Bounds x="422" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="419" y="145" width="42" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_06wm18s_di" bpmnElement="CrashWithIncident_Task">
+        <dc:Bounds x="270" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1j8gzsr_di" bpmnElement="Flow_1j8gzsr">
+        <di:waypoint x="218" y="120" />
+        <di:waypoint x="270" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ntb8un_di" bpmnElement="Flow_0ntb8un">
+        <di:waypoint x="370" y="120" />
+        <di:waypoint x="422" y="120" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -2,6 +2,7 @@ package com.boczek.c8demo.orchestrator.one.workers.standard;
 
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
+import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import com.boczek.c8demo.orchestrator.one.model.OneEntity;
 import com.boczek.c8demo.orchestrator.one.services.OrchestratorOneService;
@@ -14,7 +15,7 @@ import java.util.Map;
 
 @Component
 @SuppressWarnings("unused")
-public class PersistOneEntityStandardWorker {
+public class PersistOneEntityStandardWorker implements JobHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(PersistOneEntityStandardWorker.class);
 
@@ -25,7 +26,7 @@ public class PersistOneEntityStandardWorker {
     }
 
     @JobWorker(type = "persistOneEntityStandardWorker", autoComplete = false)
-    public void persistOneEntity(final JobClient client, final ActivatedJob job) {
+    public void handle(final JobClient client, final ActivatedJob job) {
 
         ProcessInstanceVariables variables = job.getVariablesAsType(ProcessInstanceVariables.class);
 

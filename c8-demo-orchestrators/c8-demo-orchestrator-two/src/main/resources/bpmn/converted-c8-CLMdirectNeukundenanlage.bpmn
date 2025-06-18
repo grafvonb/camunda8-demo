@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:conversion="http://camunda.org/schema/conversion/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0daix0m" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.22.0" conversion:converterVersion="0.8.9-SNAPSHOT" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.4.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:conversion="http://camunda.org/schema/conversion/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0daix0m" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.28.0" conversion:converterVersion="0.8.9-SNAPSHOT" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.4.0">
   <bpmn:process id="CLMdirectNeukundenanlageProzess" name="CLM.direct Neukundenanlage" processType="None" isClosed="false" isExecutable="true">
     <bpmn:extensionElements>
       <conversion:message severity="INFO">Unused attribute 'historyTimeToLive' on 'process' is removed.</conversion:message>
     </bpmn:extensionElements>
-    <bpmn:sequenceFlow id="Flow_1v0oedg" sourceRef="NeukundenanlageStartEvent" targetRef="LogTask1" />
+    <bpmn:sequenceFlow id="Flow_04eh7cj" sourceRef="NeuenKundenAnlegenTask" targetRef="LogTask2" />
     <bpmn:sequenceFlow id="Flow_06pwuhr" sourceRef="LogTask1" targetRef="NeuenKundenAnlegenTask" />
     <bpmn:sequenceFlow id="Flow_0f59zew" sourceRef="LogTask2" targetRef="KundeAngelegtEndSignal" />
-    <bpmn:sequenceFlow id="Flow_04eh7cj" sourceRef="NeuenKundenAnlegenTask" targetRef="LogTask2" />
+    <bpmn:sequenceFlow id="Flow_1v0oedg" sourceRef="NeukundenanlageStartEvent" targetRef="LogTask1" />
+    <bpmn:endEvent id="KundeAngelegtEndSignal" name="Kunde angelegt">
+      <bpmn:extensionElements>
+        <conversion:reference>Signal_2g0hjsv</conversion:reference>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0f59zew</bpmn:incoming>
+      <bpmn:signalEventDefinition id="SignalEventDefinition_1rneou1" signalRef="Signal_2g0hjsv" />
+    </bpmn:endEvent>
     <bpmn:userTask id="NeuenKundenAnlegenTask" name="Kunden anlegen" implementation="##unspecified">
       <bpmn:extensionElements>
         <conversion:message severity="REVIEW">Element 'inputParameter' was transformed. Parameter 'kundenId': Please review transformed expression: '&lt;kundenId&gt;' -&gt; '&lt;kundenId&gt;'.</conversion:message>
@@ -41,17 +48,13 @@
           <zeebe:input source="=&#34;Kunde wurde angelegt mit Id:&#34; + kundenId" target="logMessage" />
         </zeebe:ioMapping>
         <zeebe:taskDefinition type="logMessageWorker" />
+        <zeebe:executionListeners>
+          <zeebe:executionListener eventType="start" type="dummy" />
+        </zeebe:executionListeners>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_04eh7cj</bpmn:incoming>
       <bpmn:outgoing>Flow_0f59zew</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:endEvent id="KundeAngelegtEndSignal" name="Kunde angelegt">
-      <bpmn:extensionElements>
-        <conversion:reference>Signal_2g0hjsv</conversion:reference>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0f59zew</bpmn:incoming>
-      <bpmn:signalEventDefinition id="SignalEventDefinition_1rneou1" signalRef="Signal_2g0hjsv" />
-    </bpmn:endEvent>
     <bpmn:startEvent id="NeukundenanlageStartEvent">
       <bpmn:outgoing>Flow_1v0oedg</bpmn:outgoing>
     </bpmn:startEvent>
